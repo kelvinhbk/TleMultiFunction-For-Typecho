@@ -1,0 +1,1 @@
+<?php die; ?>a:4:{s:3:"url";s:16:"";s:9:"linktoken";s:16:"";s:5:"appid";s:16:"";s:9:"resctoken";s:16:"";}
