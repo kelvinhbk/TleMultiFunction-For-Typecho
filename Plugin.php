@@ -3,9 +3,9 @@
  * Typecho多功能插件
  * @package TleMultiFunction For Typecho
  * @author 二呆<br />(VX:Diamond0422)
- * @version 1.0.1
+ * @version 1.0.3
  * @link http://www.tongleer.com/
- * @date 2018-5-27
+ * @date 2018-06-03
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
@@ -28,6 +28,8 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		$rowTheme = $db->fetchRow($queryTheme);
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_baidusubmit.php');
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_dwz.php');
+		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_bbs.php');
+		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_oauthlogin.php');
         return _t('插件已被禁用');
     }
 
@@ -57,8 +59,22 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $dwz = new Typecho_Widget_Helper_Form_Element_Radio('dwz', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('短网址缩短'), _t("启用后可前往页面进一步配置短网址缩短的相关参数。"));
+        ), 'y', _t('短网址缩短'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_dwz数据表、page_multi_dwz.php主题文件、短网址页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($dwz->addRule('enum', _t(''), array('y', 'n')));
+		
+		//论坛模块
+        $bbs = new Typecho_Widget_Helper_Form_Element_Radio('bbs', array(
+            'y'=>_t('启用'),
+            'n'=>_t('禁用')
+        ), 'y', _t('论坛'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_bbs.php主题文件、论坛页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        $form->addInput($bbs->addRule('enum', _t(''), array('y', 'n')));
+		
+		//第三方登录模块
+        $oauthlogin = new Typecho_Widget_Helper_Form_Element_Radio('oauthlogin', array(
+            'y'=>_t('启用'),
+            'n'=>_t('禁用')
+        ), 'y', _t('第三方登录'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_oauthlogin数据表、page_multi_oauthlogin.php主题文件、第三方登录页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        $form->addInput($oauthlogin->addRule('enum', _t(''), array('y', 'n')));
 	
 		$user = @isset($_POST['user']) ? addslashes(trim($_POST['user'])) : '';
 		$pass = @isset($_POST['pass']) ? addslashes(trim($_POST['pass'])) : '';
@@ -82,11 +98,43 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 				//短网址模块
 				$dwz = @isset($_POST['dwz']) ? addslashes(trim($_POST['dwz'])) : '';
 				self::moduleDwz($db,$dwz);
+				//论坛模块
+				$bbs = @isset($_POST['bbs']) ? addslashes(trim($_POST['bbs'])) : '';
+				self::moduleBBS($db,$bbs);
+				//第三方登录模块
+				$oauthlogin = @isset($_POST['oauthlogin']) ? addslashes(trim($_POST['oauthlogin'])) : '';
+				self::moduleOAuthLogin($db,$oauthlogin);
 			}else{
 				die('登录失败');
 			}
 		}
     }
+	
+	/*第三方登录方法*/
+	public static function moduleOAuthLogin($db,$oauthlogin){
+		switch($oauthlogin){
+			case 'y':
+				//创建第三方登录所用数据表
+				self::createTableOAuthLogin($db);
+				//判断目录权限，并将插件文件写入主题目录
+				self::funWriteThemePage($db,'page_multi_oauthlogin.php');
+				//如果数据表没有添加页面就插入
+				self::funWriteDataPage($db,'第三方登录','multi_oauthlogin','page_multi_oauthlogin.php');
+				break;
+		}
+	}
+	
+	/*论坛方法*/
+	public static function moduleBBS($db,$bbs){
+		switch($bbs){
+			case 'y':
+				//判断目录权限，并将插件文件写入主题目录
+				self::funWriteThemePage($db,'page_multi_bbs.php');
+				//如果数据表没有添加页面就插入
+				self::funWriteDataPage($db,'论坛','multi_bbs','page_multi_bbs.php');
+				break;
+		}
+	}
 	
 	/*短网址方法*/
 	public static function moduleDwz($db,$dwz){
@@ -116,6 +164,21 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 				self::funWriteDataPage($db,'百度链接提交','multi_baidusubmit','page_multi_baidusubmit.php');
 				break;
 		}
+	}
+	
+	/*创建第三方登录缩短所用数据表*/
+	public static function createTableOAuthLogin($db){
+		$prefix = $db->getPrefix();
+		//$db->query('DROP TABLE IF EXISTS '.$prefix.'multi_baidusubmit');
+		$db->query('CREATE TABLE IF NOT EXISTS '.$prefix.'multi_oauthlogin(
+			`oauthid` varchar(64) COLLATE utf8_bin NOT NULL,
+			`oauthuid` bigint(20) COLLATE utf8_bin NOT NULL,
+		    `oauthnickname` varchar(64) COLLATE utf8_bin DEFAULT NULL,
+		    `oauthfigureurl` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+		    `oauthgender` varchar(8) COLLATE utf8_bin DEFAULT NULL,
+		    `oauthtype` enum("qq","weibo","weixin") COLLATE utf8_bin DEFAULT NULL,
+		    PRIMARY KEY (`oauthid`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
 	}
 	
 	/*创建短网址缩短所用数据表*/

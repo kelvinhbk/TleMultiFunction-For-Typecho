@@ -25,24 +25,6 @@ if($tleMultiFunction['baidu_submit']=='n'){
 }
 
 $setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setbaidusubmit_config.php'),'<?php die; ?>'));
-$result=checkUser($setbaidusubmit_config['username'],$setbaidusubmit_config['password'],$setbaidusubmit_config['access_token']);
-switch($result){
-	case 0:
-		die('服务器验证错误');
-		break;
-	case 101:
-		die('登录用户名不存在');
-		break;
-	case 102:
-		die('登录密码错误');
-		break;
-	case 103:
-		die('token不存在');
-		break;
-	case 104:
-		die('token已过期');
-		break;
-}
 ?>
 
 <html>

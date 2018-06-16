@@ -25,6 +25,7 @@ if($tleMultiFunction['baidu_submit']=='n'){
 	die('未启用百度链接提交插件');
 }
 
+/*
 $setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setbaidusubmit_config.php'),'<?php die; ?>'));
 $result=checkUser($setbaidusubmit_config['username'],$setbaidusubmit_config['password'],$setbaidusubmit_config['access_token']);
 switch($result){
@@ -44,6 +45,8 @@ switch($result){
 		die('token已过期');
 		break;
 }
+*/
+
 $setbaidusubmit=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setbaidusubmit.php'),'<?php die; ?>'));
 $action = isset($_POST['action']) ? addslashes(trim($_POST['action'])) : '';
 if($action=='setbaidusubmit'){
