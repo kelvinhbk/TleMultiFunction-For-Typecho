@@ -1,4 +1,4 @@
-### Typecho-TleMultiFunction For Typecho V1.0.3
+### Typecho-TleMultiFunction For Typecho V1.0.4
 ---
 
 Typecho多功能插件
@@ -20,6 +20,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-06-17 新增新浪微博短址缩短功能
 2018-06-16 新增QQ登录功能
 2018-06-03 新增论坛功能
 2018-05-27 新增短网址缩短功能

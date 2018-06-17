@@ -77,6 +77,9 @@ $setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/
 					<label class="control-label" for="inputContent">自定义短址:</label>
 					<input id="customdwz" type="text" maxlength="6"/>
 					<label class="control-label" for="inputContent">
+					  <input id="sinasite" type="checkbox" value="sina"/>新浪
+					</label>
+					<label class="control-label" for="inputContent">
 					  <input id="baidusite" type="checkbox" value="baidu"/>百度
 					</label>
 					<label class="control-label" for="inputContent">
@@ -159,10 +162,11 @@ $("#shortgo").click(function(){
 		return;
 	}
 	/*缩短类型*/
-	var type,selfsite,baidusite;
+	var type,selfsite,baidusite,sinasite;
 	selfsite='default';
 	if($('#baidusite').is(':checked')){baidusite=$('#baidusite').val();}else{baidusite='';}
-	type=selfsite+','+baidusite;
+	if($('#sinasite').is(':checked')){sinasite=$('#sinasite').val();}else{sinasite='';}
+	type=selfsite+','+baidusite+','+sinasite;
 	if(type.substring(0,1)==','){
 		type=type.substring(1);
 	}

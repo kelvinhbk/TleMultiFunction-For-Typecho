@@ -3,9 +3,9 @@
  * Typecho多功能插件
  * @package TleMultiFunction For Typecho
  * @author 二呆<br />(VX:Diamond0422)
- * @version 1.0.3
+ * @version 1.0.4
  * @link http://www.tongleer.com/
- * @date 2018-06-03
+ * @date 2018-06-17
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
