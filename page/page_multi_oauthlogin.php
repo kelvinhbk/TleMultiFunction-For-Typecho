@@ -187,17 +187,17 @@ if($code!=''&&$state!=''){
 					<form action="" method="post" class="mdui-p-x-1 mdui-p-y-1">
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联appid'); ?></label>
-						  <input class="mdui-textfield-input" id="appid" name="qq_appid" type="text" required value="<?php if(@$appid!=''){echo $appid;}else{echo @$setoauth['qq_appid'];} ?>"/>
+						  <input class="mdui-textfield-input" id="qq_appid" name="qq_appid" type="text" required value="<?php if(@$qq_appid!=''){echo $qq_appid;}else{echo @$setoauth['qq_appid'];} ?>"/>
 						  <div class="mdui-textfield-error">QQ互联appid不能为空</div>
 						</div>
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联appkey'); ?></label>
-						  <input class="mdui-textfield-input" id="appkey" name="qq_appkey" type="text" required value="<?php if(@$appkey!=''){echo $appkey;}else{echo @$setoauth['qq_appkey'];} ?>"/>
+						  <input class="mdui-textfield-input" id="qq_appkey" name="qq_appkey" type="text" required value="<?php if(@$qq_appkey!=''){echo $qq_appkey;}else{echo @$setoauth['qq_appkey'];} ?>"/>
 						  <div class="mdui-textfield-error">QQ互联appkey不能为空</div>
 						</div>
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联callback回调'); ?></label>
-						  <input class="mdui-textfield-input" id="callback" name="qq_callback" type="text" required value="<?php if(@$callback!=''){echo $callback;}else{echo @$setoauth['qq_callback'];} ?>"/>
+						  <input class="mdui-textfield-input" id="qq_callback" name="qq_callback" type="text" required value="<?=$this->permalink;?>" readOnly />
 						  <div class="mdui-textfield-error">QQ互联callback回调不能为空</div>
 						</div>
 						<div class="mdui-row-xs-1">
