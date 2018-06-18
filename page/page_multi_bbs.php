@@ -248,7 +248,7 @@ if($action=='login'){
 	  <?php $children = $categorys->getAllChildren($categorys->mid); ?>
 	  <?php if (empty($children)) { ?>
 		<li class="am-dropdown" data-am-dropdown>
-			<a class="am-dropdown-toggle" data-am-dropdown-toggle href="<?php echo $url.'?mid='.$categorys->mid; ?>" title="<?php $categorys->name(); ?>">
+			<a href="<?php echo $url.'?mid='.$categorys->mid; ?>" title="<?php $categorys->name(); ?>">
 			  <?php $categorys->name(); ?>
 			</a>
 		</li>
