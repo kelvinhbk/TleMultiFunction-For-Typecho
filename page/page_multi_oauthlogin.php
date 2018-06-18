@@ -9,7 +9,6 @@
 if (!defined('__TYPECHO_ROOT_DIR__')) exit;
 $pluginsname='TleMultiFunction';
 include dirname(__FILE__).'/../../plugins/'.$pluginsname.'/include/function.php';
-include dirname(__FILE__).'/../../plugins/'.$pluginsname.'/libs/qqConnectAPI/qqConnectAPI.php';
 
 $queryPlugins= $this->db->select('value')->from('table.options')->where('name = ?', 'plugins'); 
 $rowPlugins = $this->db->fetchRow($queryPlugins);
@@ -24,21 +23,30 @@ $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
 if($tleMultiFunction['baidu_submit']=='n'){
 	die('未启用百度链接提交插件');
 }
+$setoauth=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php'),'<?php die; ?>'));
 ?>
 <?php
 $code = isset($_GET['code']) ? addslashes(trim($_GET['code'])) : '';
 $state = isset($_GET['state']) ? addslashes(trim($_GET['state'])) : '';
 if($code!=''&&$state!=''){
 	$db = Typecho_Db::get();
-	$qc = new QC();
-	$oauthid=$qc->get_openid();
-	$userinfo=$qc->get_user_info();
+	
+	if(!$state || $state != $setoauth['qqstate']){
+		die('30001');
+	}
+	$tokenData=getQQAccessToken($setoauth['qq_appid'],$setoauth['qq_appkey'],$setoauth['qq_callback'],$_GET['code']);
+	$qqUserData=getQQOpenID($tokenData['access_token']);
+	$oauthid=$qqUserData->openid;
+	$userinfo=getQQUserInfo($tokenData['access_token'],$setoauth['qq_appid'],$oauthid);
+	
 	$name=$userinfo['nickname'];
 	$gender=$userinfo['gender'];
 	$figureurl=$userinfo['figureurl_qq_2'];
-	$query= $this->db->select()->from('table.multi_oauthlogin')->join('table.users', 'table.multi_oauthlogin.oauthuid = table.users.uid',Typecho_Db::INNER_JOIN)->where('oauthid = ?', $oauthid);
+	$oauthQuery= $this->db->select()->from('table.multi_oauthlogin')->where('oauthid = ?', $oauthid);
+	$oauthUser = $db->fetchRow($oauthQuery);
+	$query= $this->db->select()->from('table.users')->where('uid = ?', $oauthUser['oauthuid']);
 	$user = $db->fetchRow($query);
-	if($user){
+	if($oauthUser){
 		/*登录*/
 		/** 如果已经登录 */
 		if ($this->user->hasLogin()) {
@@ -142,46 +150,28 @@ if($code!=''&&$state!=''){
 			<?php
 		}
 	}else if($page=='qqlogin'){
-		$qc = new QC();
-		$qc->qq_login();
+		$qqstate=md5(uniqid(rand(), TRUE));
+		file_put_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php','<?php die; ?>'.serialize(array(
+			'qq_appid'=>$setoauth['qq_appid'],
+			'qq_appkey'=>$setoauth['qq_appkey'],
+			'qq_callback'=>$setoauth['qq_callback'],
+			'qqstate'=>$qqstate
+		)));
+		$login_url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id='.$setoauth['qq_appid'].'&redirect_uri='.urlencode($setoauth['qq_callback']).'&state='.$qqstate;
+		header("Location:$login_url");
 	}else if($page=='set'){
 		if ($this->user->pass('administrator')){
-			$incFile = fopen(dirname(__FILE__)."/../../plugins/".$pluginsname."/libs/qqConnectAPI/comm/inc.php","r") or die("请设置插件目录下/libs/API/comm/inc.php的权限为777");
-			$read=@fread($incFile,filesize(dirname(__FILE__)."/../../plugins/".$pluginsname."/libs/qqConnectAPI/comm/inc.php"));
-			fclose($incFile);
-			$read=str_replace('<?php die(\'forbidden\'); ?>','',$read);
-			$readData=json_decode(trim($read),true);
 			$action = isset($_POST['action']) ? addslashes(trim($_POST['action'])) : '';
 			if($action=='setoauthlogin'){
-				$appid = isset($_POST['appid']) ? addslashes(trim($_POST['appid'])) : '';
-				$appkey = isset($_POST['appkey']) ? addslashes(trim($_POST['appkey'])) : '';
-				$callback = isset($_POST['callback']) ? addslashes(trim($_POST['callback'])) : '';
-				if($appid&&$appkey&&$callback){
-					$scope=array(
-						'get_user_info','add_share','list_album','add_album','upload_pic','add_topic','add_one_blog','add_weibo','check_page_fans','add_t','add_pic_t','del_t','get_repost_list','get_info','get_other_info','get_fanslist','get_idolist','add_idol','del_idol','get_tenpay_addr'
-					);
-					$scope = implode(",",$scope);
-					$setting=array(
-						'appid'=>$appid,
-						'appkey'=>$appkey,
-						'callback'=>$callback,
-						'storageType'=>'file',
-						'host'=>'localhost',
-						'user'=>'root',
-						'password'=>'root',
-						'database'=>'test',
-						'scope'=>$scope,
-						'errorReport'=>true
-					);
-					$json = "<?php die('forbidden'); ?>\n";
-					$json .= json_encode($setting);
-					$json = str_replace("\/", "/",$json);
-					$incFile = fopen(dirname(__FILE__)."/../../plugins/".$pluginsname."/libs/qqConnectAPI/comm/inc.php","w+") or die("请设置插件目录下/libs/API/comm/inc.php的权限为777");
-					if(fwrite($incFile, $json)){
-						fclose($incFile);
-					}else{
-						die("write file Error");
-					}
+				$qq_appid = isset($_POST['qq_appid']) ? addslashes(trim($_POST['qq_appid'])) : '';
+				$qq_appkey = isset($_POST['qq_appkey']) ? addslashes(trim($_POST['qq_appkey'])) : '';
+				$qq_callback = isset($_POST['qq_callback']) ? addslashes(trim($_POST['qq_callback'])) : '';
+				if($qq_appid&&$qq_appkey&&$qq_callback){
+					file_put_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php','<?php die; ?>'.serialize(array(
+						'qq_appid'=>$qq_appid,
+						'qq_appkey'=>$qq_appkey,
+						'qq_callback'=>$qq_callback
+					)));
 				}
 			}
 			?>
@@ -197,17 +187,17 @@ if($code!=''&&$state!=''){
 					<form action="" method="post" class="mdui-p-x-1 mdui-p-y-1">
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联appid'); ?></label>
-						  <input class="mdui-textfield-input" id="appid" name="appid" type="text" required value="<?php if(@$appid!=''){echo $appid;}else{echo @$readData['appid'];} ?>"/>
+						  <input class="mdui-textfield-input" id="appid" name="qq_appid" type="text" required value="<?php if(@$appid!=''){echo $appid;}else{echo @$setoauth['qq_appid'];} ?>"/>
 						  <div class="mdui-textfield-error">QQ互联appid不能为空</div>
 						</div>
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联appkey'); ?></label>
-						  <input class="mdui-textfield-input" id="appkey" name="appkey" type="text" required value="<?php if(@$appkey!=''){echo $appkey;}else{echo @$readData['appkey'];} ?>"/>
+						  <input class="mdui-textfield-input" id="appkey" name="qq_appkey" type="text" required value="<?php if(@$appkey!=''){echo $appkey;}else{echo @$setoauth['qq_appkey'];} ?>"/>
 						  <div class="mdui-textfield-error">QQ互联appkey不能为空</div>
 						</div>
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联callback回调'); ?></label>
-						  <input class="mdui-textfield-input" id="callback" name="callback" type="text" required value="<?php if(@$callback!=''){echo $callback;}else{echo @$readData['callback'];} ?>"/>
+						  <input class="mdui-textfield-input" id="callback" name="qq_callback" type="text" required value="<?php if(@$callback!=''){echo $callback;}else{echo @$setoauth['qq_callback'];} ?>"/>
 						  <div class="mdui-textfield-error">QQ互联callback回调不能为空</div>
 						</div>
 						<div class="mdui-row-xs-1">

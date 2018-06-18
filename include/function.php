@@ -1,4 +1,83 @@
 <?php
+function getQQUserInfo($access_token,$oauth_consumer_key,$openid){
+	$data=array(
+		"access_token"=>$access_token,
+		"oauth_consumer_key"=>$oauth_consumer_key,
+		"openid"=>$openid
+	);
+	$url = 'https://graph.qq.com/user/get_user_info';
+	$client = Typecho_Http_Client::get();
+	if ($client) {
+		$str = "";
+		foreach ( $data as $key => $value ) { 
+			$str.= "$key=" . urlencode( $value ). "&" ;
+		}
+		$data = substr($str,0,-1);
+		$client->setData($data)
+			->setTimeout(30)
+			->send($url);
+		$status = $client->getResponseStatus();
+		$rs = $client->getResponseBody();
+		$arr=json_decode($rs,true);
+		return $arr;
+	}
+	return 0;
+}
+function getQQOpenID($access_token){
+	$data=array(
+		"access_token"=>$access_token
+	);
+	$url = 'https://graph.qq.com/oauth2.0/me';
+	$client = Typecho_Http_Client::get();
+	if ($client) {
+		$str = "";
+		foreach ( $data as $key => $value ) { 
+			$str.= "$key=" . urlencode( $value ). "&" ;
+		}
+		$data = substr($str,0,-1);
+		$client->setData($data)
+			->setTimeout(30)
+			->send($url);
+		$status = $client->getResponseStatus();
+		$rs = $client->getResponseBody();
+		if(strpos($rs, "callback") !== false){
+			$lpos = strpos($rs, "(");
+			$rpos = strrpos($rs, ")");
+			$rs = substr($rs, $lpos + 1, $rpos - $lpos -1);
+		}
+		$user = json_decode($rs);
+		if(!isset($user->error)){
+			return $user;
+		}
+	}
+	return 0;
+}
+function getQQAccessToken($qq_appid,$qq_appkey,$qq_callback,$code){
+	$data=array(
+		"grant_type"=>'authorization_code',
+		"client_id"=>$qq_appid,
+		"client_secret"=>$qq_appkey,
+		"code"=>$code,
+		"redirect_uri"=>$qq_callback
+	);
+	$url = 'https://graph.qq.com/oauth2.0/token';
+	$client = Typecho_Http_Client::get();
+	if ($client) {
+		$str = "";
+		foreach ( $data as $key => $value ) { 
+			$str.= "$key=" . urlencode( $value ). "&" ;
+		}
+		$data = substr($str,0,-1);
+		$client->setData($data)
+			->setTimeout(30)
+			->send($url);
+		$status = $client->getResponseStatus();
+		$rs = $client->getResponseBody();
+		parse_str($rs,$arr);
+		return $arr;
+	}
+	return 0;
+}
 function checkUser($user,$pass,$token){
 	$data=array(
 		"user"=>$user,

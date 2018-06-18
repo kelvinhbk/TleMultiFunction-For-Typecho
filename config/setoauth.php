@@ -1,0 +1,1 @@
+<?php die; ?>a:4:{s:8:"qq_appid";s:9:"";s:9:"qq_appkey";s:32:"";s:11:"qq_callback";s:46:"";s:7:"qqstate";s:32:"";}
