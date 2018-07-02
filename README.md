@@ -1,4 +1,4 @@
-### Typecho-TleMultiFunction For Typecho V1.0.5
+### Typecho-TleMultiFunction For Typecho V1.0.6多功能插件
 ---
 
 Typecho多功能插件
@@ -20,6 +20,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-07-02 修改了论坛不能显示图片的bug
 2018-06-18 新增QQ登录功能
 2018-06-17 新增新浪微博短址缩短功能
 2018-06-03 新增论坛功能

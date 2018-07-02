@@ -478,7 +478,36 @@ if($action=='login'){
 		  </div>
 		</header>
 		<article class="blog-main">
-			<?=$row['text'];?>
+			<?php
+				$content=$row['text'];
+				$i=0;
+				$match_1 = "/(\!\[).*?((.gif)|(.jpg)|(.bmp)|(.png)|(.GIF)|(.JPG)|(.PNG)|(.BMP))\]\[(\d)\]/";
+				preg_match_all ($match_1,$row['text'],$matches_1,PREG_PATTERN_ORDER);
+				if(count($matches_1)>0&&count($matches_1[0])>0){
+					foreach($matches_1[0] as $val_1){
+						$content=str_replace($val_1,"",$content);
+						$img_prefix=substr($val_1,strlen($val_1)- 3,3);
+						$img_prefix=str_replace("[","\[",$img_prefix);
+						$img_prefix=str_replace("]","\]",$img_prefix);
+						$match_2 = "/(".$img_prefix.":).*?((.gif)|(.jpg)|(.bmp)|(.png)|(.GIF)|(.JPG)|(.PNG)|(.BMP))/";
+						preg_match_all ($match_2,$content,$matches_2,PREG_PATTERN_ORDER);
+						if(count($matches_2)>0&&count($matches_2[0])>0){
+							foreach($matches_2[0] as $val_2){
+								$img=substr($val_2,4);
+								$content=preg_replace($match_2,'<img src="'.$img.'" />',$content);
+								break;
+							}
+						}else{
+							$content=$row['text'];
+							break;
+						}
+						$i++;
+					}
+				}else{
+					$content=$row['text'];
+				}
+				echo $content;
+			?>
 		</article>
 		<hr/>
         <ul class="am-comments-list">
