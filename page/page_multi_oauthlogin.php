@@ -135,32 +135,15 @@ if($code!=''&&$state!=''){
 			<h3>管理员配置</h3>
 			<hr />
 			<p>
-				第一步：<a href="?page=set"><input type="button" value="配置参数" /></a>
-			</p>
-			<p>
-				第二步：将以下代码放到想要添加QQ登录的地方即可。<br />
-				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
-			</p>
-			<p>
-				测试：<a href="?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>
-			</p>
-			<p>
-				备注：已登录或禁止注册时不会进行登录和注册。
+				第一步：配置参数
 			</p>
 			<?php
-		}
-	}else if($page=='qqlogin'){
-		$qqstate=md5(uniqid(rand(), TRUE));
-		file_put_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php','<?php die; ?>'.serialize(array(
-			'qq_appid'=>$setoauth['qq_appid'],
-			'qq_appkey'=>$setoauth['qq_appkey'],
-			'qq_callback'=>$setoauth['qq_callback'],
-			'qqstate'=>$qqstate
-		)));
-		$login_url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id='.$setoauth['qq_appid'].'&redirect_uri='.urlencode($setoauth['qq_callback']).'&state='.$qqstate;
-		header("Location:$login_url");
-	}else if($page=='set'){
-		if ($this->user->pass('administrator')){
+			$id = isset($_GET['id']) ? addslashes(trim($_GET['id'])) : 0;
+			if($id!=0){
+				$delete = $this->db->delete('table.multi_oauthlogin')->where('oauthuid = ?', $id);
+				$deletedRows = $this->db->query($delete);
+				echo "<script>".$this->permalink."</script>";exit;
+			}
 			$action = isset($_POST['action']) ? addslashes(trim($_POST['action'])) : '';
 			if($action=='setoauthlogin'){
 				$qq_appid = isset($_POST['qq_appid']) ? addslashes(trim($_POST['qq_appid'])) : '';
@@ -180,7 +163,7 @@ if($code!=''&&$state!=''){
 			<script src="//cdn.bootcss.com/mdui/0.4.1/js/mdui.min.js"></script>
 			<!-- content section -->
 			<section>
-				<div class="mdui-shadow-10 mdui-center" style="width:300px;">
+				<div class="mdui-shadow-10" style="width:300px;">
 					<div class="mdui-typo mdui-valign mdui-color-blue mdui-text-color-white">
 					  <h6 class="mdui-center">第三方登录设置</h6>
 					</div>
@@ -214,9 +197,71 @@ if($code!=''&&$state!=''){
 			$("#setoauthlogin").click(function(){
 				$('form').submit();
 			});
+			function delUser(id){
+				if(confirm('确认要删除该用户吗？')){
+					location.href="<?=$this->permalink;?>?id="+id;
+				}
+			}
 			</script>
-		<?php
+			<p>
+				第二步：将以下代码放到想要添加QQ登录的地方即可。
+			</p>
+			<p>
+				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
+			</p>
+			<p>
+				测试：<a href="?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>（备注：已登录或禁止注册时不会进行登录和注册。）
+			</p>
+			<hr />
+			<h3>第三方登录用户管理</h3>
+			<small>
+				删除后要去typecho后台用户管理删除对应用户，或通过typecho后台用户管理删除用户后要在此处删除QQ登录注册的用户，保持同步。
+			</small>
+			<hr />
+			<div class="mdui-table-fluid">
+			<table class="mdui-table">
+			  <thead>
+				<tr>
+				  <th>用户名</th>
+				  <th>昵称</th>
+				  <th>头像</th>
+				  <th>注册时间</th>
+				  <th>操作</th>
+				</tr>
+			  </thead>
+			  <tbody>
+				<?php
+				$query= "select * from ".$this->db->getPrefix()."multi_oauthlogin as ol inner join ".$this->db->getPrefix()."users as u on ol.oauthuid = u.uid order by u.created desc";
+				$result = $this->db->fetchAll($query);
+				foreach($result as $value){
+				?>
+				<tr>
+				  <td><?=$value['name'];?></td>
+				  <td><?=$value['screenName'];?></td>
+				  <td><img src="<?=$value['oauthfigureurl'];?>" width="20" /></td>
+				  <td><?=date('Y-m-d H:i:s',$value['created']);?></td>
+				  <td>
+					<a href="javascript:delUser('<?=$value['oauthuid'];?>');">删除</a>
+				  </td>
+				</tr>
+				<?php
+				}
+				?>
+			  </tbody>
+			</table>
+		  </div>
+			<?php
 		}
+	}else if($page=='qqlogin'){
+		$qqstate=md5(uniqid(rand(), TRUE));
+		file_put_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php','<?php die; ?>'.serialize(array(
+			'qq_appid'=>$setoauth['qq_appid'],
+			'qq_appkey'=>$setoauth['qq_appkey'],
+			'qq_callback'=>$setoauth['qq_callback'],
+			'qqstate'=>$qqstate
+		)));
+		$login_url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id='.$setoauth['qq_appid'].'&redirect_uri='.urlencode($setoauth['qq_callback']).'&state='.$qqstate;
+		header("Location:$login_url");
 	}
 }
 ?>

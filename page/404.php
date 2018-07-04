@@ -51,17 +51,44 @@ if($shorturl!=''){
 }
 ?>
 <?php $this->need('header.php'); ?>
-		<!-- content section -->
-        <section class="content-top-margin no-padding-bottom border-top wow fadeIn">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-10 col-sm-8 col-xs-11 text-center center-col">
-                        <p class="not-found-title black-text">404!</p>
-                        <p class="text-med text-uppercase letter-spacing-2">找不到你要找的网页</p>
-                        <a class="highlight-button-dark btn btn-small no-margin-right" href="<?php $this->options ->siteUrl(); ?>">跳转主页</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- end content section -->
+<style>
+.page-main{
+	background-color:#fff;
+	width:100%;
+	margin:0px auto 0px auto;
+}
+@media screen and (max-width: 960px) {
+	.page-main {width: 100%;}
+}
+</style>
+<!-- content start -->
+<section class="page-main">
+  <div class="admin-content">
+    <div class="admin-content-body">
+      <div class="am-g">
+        <div class="am-u-sm-12">
+          <h2 class="am-text-center am-text-xxxl am-margin-top-lg">404. Not Found</h2>
+          <p class="am-text-center">没有找到你要的页面</p>
+        <pre class="page-404">
+          .----.
+       _.'__    `.
+   .--($)($$)---/#\
+ .' @          /###\
+ :         ,   #####
+  `-..__.-' _.-\###/
+        `;_:    `"'
+      .'"""""`.
+     /,  ya ,\\
+    //  404!  \\
+    `-._______.-'
+    ___`. | .'___
+   (______|______)
+        </pre>
+        </div>
+      </div>
+    </div>
+
+  </div>
+<!-- content end -->
+</section>
 <?php $this->need('footer.php'); ?>

@@ -1,10 +1,14 @@
-### Typecho-TleMultiFunction For Typecho V1.0.6多功能插件
+### Typecho-TleMultiFunction For Typecho V1.0.7多功能插件
 ---
 
 Typecho多功能插件
 
+程序有可能会遇到bug不改版本号直接修改代码的时候，所以扫描以下二维码关注公众号“同乐儿”，可直接与作者二呆产生联系，不再为bug烦恼，随时随地解决问题。
+
+<img src="http://me.tongleer.com/content/uploadfile/201706/008b1497454448.png">
+
 #### 使用方法：
-第一步：下载本插件，放在 `usr/plugins/` 目录中；<br />
+第一步：下载本插件，放在 `usr/plugins/` 目录中（插件文件夹名必须为TleMultiFunction）；<br />
 第二步：激活插件；<br />
 第三步：填写配置；<br />
 第四步：完成。<br />
@@ -20,6 +24,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-07-04 修改QQ登录配置界面样式及增加可删除通过QQ登录注册的用户，修改了404页面样式。<br />
 2018-07-02 修复了论坛不能显示图片的bug<br />
 2018-06-18 新增QQ登录功能<br />
 2018-06-17 新增新浪微博短址缩短功能<br />
