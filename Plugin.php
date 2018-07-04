@@ -3,7 +3,7 @@
  * Typecho多功能插件
  * @package TleMultiFunction For Typecho
  * @author 二呆<br />(VX:Diamond0422)
- * @version 1.0.7
+ * @version 1.0.6
  * @link http://www.tongleer.com/
  * @date 2018-06-18
  */

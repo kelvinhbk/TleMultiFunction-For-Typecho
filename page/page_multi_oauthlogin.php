@@ -44,10 +44,10 @@ if($code!=''&&$state!=''){
 	$figureurl=$userinfo['figureurl_qq_2'];
 	$oauthQuery= $this->db->select()->from('table.multi_oauthlogin')->where('oauthid = ?', $oauthid);
 	$oauthUser = $db->fetchRow($oauthQuery);
+	$query= $this->db->select()->from('table.users')->where('uid = ?', $oauthUser['oauthuid']);
+	$user = $db->fetchRow($query);
 	if($oauthUser){
 		/*登录*/
-		$query= $this->db->select()->from('table.users')->where('uid = ?', $oauthUser['oauthuid']);
-		$user = $db->fetchRow($query);
 		/** 如果已经登录 */
 		if ($this->user->hasLogin()) {
 			/** 直接返回 */
