@@ -1,4 +1,4 @@
-### Typecho-TleMultiFunction For Typecho V1.0.7多功能插件
+### Typecho-TleMultiFunction For Typecho V1.0.8多功能插件
 ---
 
 Typecho多功能插件
@@ -24,6 +24,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-07-05 新增了手机号注册模块、插件升级检测让你一直使用最新版本。<br />
 2018-07-04 修改QQ登录配置界面样式及增加可删除通过QQ登录注册的用户，修改了404页面样式。<br />
 2018-07-02 修复了论坛不能显示图片的bug<br />
 2018-06-18 新增QQ登录功能<br />

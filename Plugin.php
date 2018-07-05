@@ -1,9 +1,9 @@
 <?php
 /**
- * Typecho多功能插件
+ * Typecho多功能插件集成多项功能，有问题可咨询微信：Diamond0422。
  * @package TleMultiFunction For Typecho
- * @author 二呆<br />(VX:Diamond0422)
- * @version 1.0.7
+ * @author 二呆
+ * @version 1.0.8
  * @link http://www.tongleer.com/
  * @date 2018-06-18
  */
@@ -22,6 +22,9 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 			'password'=>'',
 			'access_token'=>''
 		)));
+		//恢复原注册页面
+		if(copy(dirname(__FILE__).'/page/register.php',dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/register.php')){
+		}
 		//删除页面模板
 		$db = Typecho_Db::get();
 		$queryTheme= $db->select('value')->from('table.options')->where('name = ?', 'theme'); 
@@ -30,11 +33,17 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_dwz.php');
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_bbs.php');
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_oauthlogin.php');
+		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_phonelogin.php');
         return _t('插件已被禁用');
     }
 
     // 插件配置面板
     public static function config(Typecho_Widget_Helper_Form $form){
+		//版本检查
+		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=7');
+		$div=new Typecho_Widget_Helper_Layout();
+		$div->html('版本检查：'.$version);
+		$div->render();
 		//登录验证
 		$user = new Typecho_Widget_Helper_Form_Element_Text('user', null, '', _t('用户名：'));
         $form->addInput($user->addRule('required', _t('用户名不能为空！')));
@@ -66,7 +75,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $bbs = new Typecho_Widget_Helper_Form_Element_Radio('bbs', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('论坛'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_bbs.php主题文件、论坛页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'y', _t('论坛'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_bbs.php主题文件、论坛页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($bbs->addRule('enum', _t(''), array('y', 'n')));
 		
 		//第三方登录模块
@@ -75,6 +84,13 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
             'n'=>_t('禁用')
         ), 'y', _t('第三方登录'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_oauthlogin数据表、page_multi_oauthlogin.php主题文件、第三方登录页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($oauthlogin->addRule('enum', _t(''), array('y', 'n')));
+		
+		//手机号登录模块
+		$phonelogin = new Typecho_Widget_Helper_Form_Element_Radio('phonelogin', array(
+            'y'=>_t('启用'),
+            'n'=>_t('禁用')
+        ), 'y', _t('手机号登录'), _t("启用后可前往页面进一步配置手机号登录的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_phonelogin.php主题文件、手机号登录页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        $form->addInput($phonelogin->addRule('enum', _t(''), array('y', 'n')));
 	
 		$user = @isset($_POST['user']) ? addslashes(trim($_POST['user'])) : '';
 		$pass = @isset($_POST['pass']) ? addslashes(trim($_POST['pass'])) : '';
@@ -104,11 +120,26 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 				//第三方登录模块
 				$oauthlogin = @isset($_POST['oauthlogin']) ? addslashes(trim($_POST['oauthlogin'])) : '';
 				self::moduleOAuthLogin($db,$oauthlogin);
+				//手机号登录模块
+				$phonelogin = @isset($_POST['phonelogin']) ? addslashes(trim($_POST['phonelogin'])) : '';
+				self::modulePhoneLogin($db,$phonelogin);
 			}else{
 				die('登录失败');
 			}
 		}
     }
+	
+	/*手机号登录方法*/
+	public static function modulePhoneLogin($db,$phonelogin){
+		switch($phonelogin){
+			case 'y':
+				//判断目录权限，并将插件文件写入主题目录
+				self::funWriteThemePage($db,'page_multi_phonelogin.php');
+				//如果数据表没有添加页面就插入
+				self::funWriteDataPage($db,'手机号登录','multi_phonelogin','page_multi_phonelogin.php');
+				break;
+		}
+	}
 	
 	/*第三方登录方法*/
 	public static function moduleOAuthLogin($db,$oauthlogin){
@@ -233,6 +264,35 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		}else{
 			$slug=$row['slug'];
 		}
+	}
+	/*公共方法：将页面写入后台目录*/
+	public static function funWriteAdminPage($db,$filename,$isindex){
+		/*将跳转新注册页面的链接写入原register.php*/
+		$query= $db->select('slug')->from('table.contents')->where('template = ?', 'page_multi_phonelogin.php'); 
+		$row = $db->fetchRow($query);
+		if(!is_writable(dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/'.$filename)){
+			die('后台目录不可写，请更改目录权限。');
+		}
+		$querySiteUrl= $db->select('value')->from('table.options')->where('name = ?', 'siteUrl'); 
+		$rowSiteUrl = $db->fetchRow($querySiteUrl);
+		if($isindex=='y'){
+			$siteUrl=$rowSiteUrl['value'].'/index.php/'.$row['slug'].'.html';
+		}else{
+			$siteUrl=$rowSiteUrl['value'].'/'.$row['slug'].'.html';
+		}
+		$registerphp='
+			<?php
+			include "common.php";
+			if ($user->hasLogin() || !$options->allowRegister) {
+				$response->redirect($options->siteUrl);
+			}else{
+				header("Location: '.$siteUrl.'");
+			}
+			?>
+		';
+		$regphp = fopen(dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/'.$filename, "w") or die("不能写入".$filename."文件");
+		fwrite($regphp, $registerphp);
+		fclose($regphp);
 	}
 	/*公共方法：将页面写入主题目录*/
 	public static function funWriteThemePage($db,$filename){
