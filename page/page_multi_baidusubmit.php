@@ -97,7 +97,7 @@ if(strpos($this->permalink,'?')){
 	</div>
 	
 	<div class="am-scrollable-horizontal">
-	  <table class="am-table am-table-bordered am-table-striped am-text-nowrap">
+	  <table class="am-table am-table-bordered am-table-striped am-text-nowrap baidusubmittable">
 		<thead>
 		  <tr>
 			<th>文章</th>
@@ -223,7 +223,7 @@ $("#setbaidusubmit").click(function(){
 	}
 	$('form').submit();
 });
-$(".mdui-table .baidusubmit").each(function(){
+$(".baidusubmittable .baidusubmit").each(function(){
 	var id=$(this).attr("id")
 	$("#"+id).click( function () {
 		$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/baidusubmit.php",{action:'baidusubmit',url:$(this).attr('data-url'),cid:$(this).attr('data-cid'),pluginsname:$(this).attr('data-pluginsname')},function(data){
@@ -236,7 +236,7 @@ $(".mdui-table .baidusubmit").each(function(){
 		});
 	});
 });
-$(".mdui-table .baiduziyuansubmit").each(function(){
+$(".baidusubmittable .baiduziyuansubmit").each(function(){
 	var id=$(this).attr("id")
 	$("#"+id).click( function () {
 		$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/baidusubmit.php",{action:'baiduziyuansubmit',url:$(this).attr('data-url'),cid:$(this).attr('data-cid'),pluginsname:$(this).attr('data-pluginsname')},function(data){
