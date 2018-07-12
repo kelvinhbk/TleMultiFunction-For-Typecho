@@ -63,7 +63,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $baidu_submit = new Typecho_Widget_Helper_Form_Element_Radio('baidu_submit', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('百度链接提交'), _t("启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'y', _t('百度链接提交（可选：链接检测请把&lt;?php if($this->user->pass("administrator")){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'), _t("启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($baidu_submit->addRule('enum', _t(''), array('y', 'n')));
 		
 		//短网址模块
@@ -352,6 +352,13 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		if(!isset($plugins['activated']['TleMultiFunction'])){
 			return false;
 		}
+		//判断是否开启百度链接提交插件
+		$queryTleMultiFunction= $db->select('value')->from('table.options')->where('name = ?', 'plugin:TleMultiFunction'); 
+		$rowTleMultiFunction = $db->fetchRow($queryTleMultiFunction);
+		$tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
+		if($tleMultiFunction['baidu_submit']=='n'){
+			return false;
+		}
 		//判断是否设置百度参数
 		$setbaidusubmit=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/config/setbaidusubmit.php'),'<?php die; ?>'));
 		if(!$setbaidusubmit||$setbaidusubmit['url']==''||$setbaidusubmit['linktoken']==''){
@@ -395,6 +402,38 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		}
         return false;
     }
+	
+	//百度提交检查判断当前文章是否被百度收录，若没有被收录则可点击提交至百度，加速收录！
+	public static function baiduSubmitCheck($obj,$content){
+		$db = Typecho_Db::get();
+		//判断是否开启插件
+		$queryPlugins= $db->select('value')->from('table.options')->where('name = ?', 'plugins'); 
+		$rowPlugins = $db->fetchRow($queryPlugins);
+		$plugins=@unserialize($rowPlugins['value']);
+		if(!isset($plugins['activated']['TleMultiFunction'])){
+			return null;
+		}
+		//判断是否开启百度链接提交插件
+		$queryTleMultiFunction= $db->select('value')->from('table.options')->where('name = ?', 'plugin:TleMultiFunction'); 
+		$rowTleMultiFunction = $db->fetchRow($queryTleMultiFunction);
+		$tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
+		if($tleMultiFunction['baidu_submit']=='n'){
+			return null;
+		}
+		//判断是否收录
+		$url='http://www.baidu.com/s?wd='.$obj->permalink;
+		$curl=curl_init();
+		curl_setopt($curl,CURLOPT_URL,$url);
+		curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);
+		$rs=curl_exec($curl);
+		curl_close($curl);
+		if(!strpos($rs,'没有找到')){
+			$content="<p align=right>百度已收录(仅管理员可见)</p>".$content; 
+		}else{
+			$content="<p align=right><b><a style=color:red target=_blank href=http://zhanzhang.baidu.com/sitesubmit/index?sitename=".get_permalink().">百度未收录!点击此处提交</a></b>(仅管理员可见)</p>".$content;
+		}
+		return $content;
+	}
 
     // 个人用户配置面板
     public static function personalConfig(Typecho_Widget_Helper_Form $form){}
