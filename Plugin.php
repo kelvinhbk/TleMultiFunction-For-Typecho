@@ -343,6 +343,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 	
 	//自动百度提交新文章或页面
 	public static function baiduAutoSubmit($contents, $widget){
+		date_default_timezone_set('Asia/Shanghai');
 		$db = Typecho_Db::get();
 		//判断是否开启插件
 		$queryPlugins= $db->select('value')->from('table.options')->where('name = ?', 'plugins'); 
