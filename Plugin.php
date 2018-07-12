@@ -3,14 +3,16 @@
  * Typecho多功能插件集成多项功能，有问题可咨询微信：Diamond0422。
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.8
+ * @version 1.0.9
  * @link http://www.tongleer.com/
- * @date 2018-06-18
+ * @date 2018-07-12
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
     // 激活插件
     public static function activate(){
+		Typecho_Plugin::factory('Widget_Contents_Post_Edit')->finishPublish = array(__CLASS__, 'baiduAutoSubmit');
+        Typecho_Plugin::factory('Widget_Contents_Page_Edit')->finishPublish = array(__CLASS__, 'baiduAutoSubmit');
         return _t('插件已经激活，需先配置信息！');
     }
 
@@ -40,7 +42,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
     // 插件配置面板
     public static function config(Typecho_Widget_Helper_Form $form){
 		//版本检查
-		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=7');
+		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=9');
 		$div=new Typecho_Widget_Helper_Layout();
 		$div->html('版本检查：'.$version);
 		$div->render();
@@ -338,6 +340,60 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		}
 		return 0;
 	}
+	
+	//自动百度提交新文章或页面
+	public static function baiduAutoSubmit($contents, $widget){
+		$db = Typecho_Db::get();
+		//判断是否开启插件
+		$queryPlugins= $db->select('value')->from('table.options')->where('name = ?', 'plugins'); 
+		$rowPlugins = $db->fetchRow($queryPlugins);
+		$plugins=@unserialize($rowPlugins['value']);
+		if(!isset($plugins['activated']['TleMultiFunction'])){
+			return false;
+		}
+		//判断是否设置百度参数
+		$setbaidusubmit=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/config/setbaidusubmit.php'),'<?php die; ?>'));
+		if(!$setbaidusubmit||$setbaidusubmit['url']==''||$setbaidusubmit['linktoken']==''){
+			return false;
+		}
+		//判断是否提交过百度
+		$query= $db->select()->from('table.multi_baidusubmit')->where('url = ?', $widget->permalink); 
+		$row = $db->fetchRow($query);
+		if(count($row)==0){
+			//提交百度
+			$urls = array( $widget->permalink );
+			$api = sprintf('http://data.zz.baidu.com/urls?site=%s&token=%s', $setbaidusubmit['url'], $setbaidusubmit['linktoken']);
+			$client = Typecho_Http_Client::get();
+			if ($client) {
+				$client->setData( implode(PHP_EOL, $urls ) )
+					->setHeader('Content-Type', 'text/plain')
+					->setTimeout(30)
+					->send($api);
+				$status = $client->getResponseStatus();
+				$rs = $client->getResponseBody();
+				$arr=json_decode($rs,true);
+				if($status==200){
+					$error='';
+				}else{
+					$error=$arr['message'];
+				}
+				//记录到本地数据库
+				$cidliker=str_replace(Helper::options()->siteUrl,'',$widget->permalink);
+				preg_match_all ("/\d+/",$cidliker,$matches);
+				$result = array(
+					'bscid'   =>  $matches[0][0],
+					'url'   =>  $widget->permalink,
+					'instime'     =>  date('Y-m-d H:i:s',Typecho_Date::time()),
+					'error'     =>  $error,
+					'linkstatus'=>$status
+				);
+				$insert = $db->insert('table.multi_baidusubmit')->rows($result);
+				$insertId = $db->query($insert);
+				return true;
+			}
+		}
+        return false;
+    }
 
     // 个人用户配置面板
     public static function personalConfig(Typecho_Widget_Helper_Form $form){}

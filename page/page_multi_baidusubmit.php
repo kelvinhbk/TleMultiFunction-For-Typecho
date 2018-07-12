@@ -69,60 +69,75 @@ if($action=='setbaidusubmit'){
 		)));
 	}
 }
+if(strpos($this->permalink,'?')){
+	$url=substr($this->permalink,0,strpos($this->permalink,'?'));
+}else{
+	$url=$this->permalink;
+}
 ?>
 
-<link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.4.1/css/mdui.min.css">
-<script src="//cdn.bootcss.com/mdui/0.4.1/js/mdui.min.js"></script>
+<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css"/>
+<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
 <script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 <!-- content section -->
 <section>
-	<div class="mdui-shadow-10 mdui-center" style="width:300px;">
-		<div class="mdui-typo mdui-valign mdui-color-blue mdui-text-color-white">
-		  <h6 class="mdui-center">百度链接提交设置</h6>
-		</div>
-		<form action="" method="post" class="mdui-p-x-1 mdui-p-y-1">
-			<div class="mdui-textfield mdui-textfield-floating-label">
-			  <label class="mdui-textfield-label"><?php _e('站点链接(不带http)'); ?></label>
-			  <input class="mdui-textfield-input" id="url" name="url" type="text" required value="<?php if(@$url!=''){echo $url;}else{echo @$setbaidusubmit['url'];} ?>"/>
-			  <div class="mdui-textfield-error">站点链接不能为空</div>
-			</div>
-			<div class="mdui-textfield mdui-textfield-floating-label">
-			  <label class="mdui-textfield-label"><?php _e('站点token'); ?></label>
-			  <input class="mdui-textfield-input" id="linktoken" name="linktoken" type="text" required value="<?php if(@$linktoken!=''){echo $linktoken;}else{echo @$setbaidusubmit['linktoken'];} ?>"/>
-			  <div class="mdui-textfield-error">站点token不能为空</div>
-			</div>
-			<div class="mdui-textfield mdui-textfield-floating-label">
-			  <label class="mdui-textfield-label"><?php _e('熊掌号appid'); ?></label>
-			  <input class="mdui-textfield-input" id="appid" name="appid" type="text" required value="<?php if(@$appid!=''){echo $appid;}else{echo @$setbaidusubmit['appid'];} ?>"/>
-			  <div class="mdui-textfield-error">熊掌号appid不能为空</div>
-			</div>
-			<div class="mdui-textfield mdui-textfield-floating-label">
-			  <label class="mdui-textfield-label"><?php _e('熊掌号token'); ?></label>
-			  <input class="mdui-textfield-input" id="resctoken" name="resctoken" type="text" required value="<?php if(@$resctoken!=''){echo $resctoken;}else{echo @$setbaidusubmit['resctoken'];} ?>"/>
-			  <div class="mdui-textfield-error">熊掌号token不能为空</div>
-			</div>
-			<div class="mdui-row-xs-1">
-			  <div class="mdui-col">
-				<input type="hidden" name="action" value="setbaidusubmit" />
-				<button id="setbaidusubmit" class="mdui-btn mdui-btn-block mdui-btn-raised mdui-color-theme-accent mdui-ripple mdui-color-blue mdui-text-color-white"><?php _e('修改设置'); ?></button>
-			  </div>
-			</div>
+	<div class="am-g">
+	  <div class="am-u-md-8 am-u-sm-centered">
+		<form class="am-form" action="" method="post">
+		  <fieldset class="am-form-set">
+			<input type="text" id="url" name="url" value="<?php if(@$url!=''){echo $url;}else{echo @$setbaidusubmit['url'];} ?>" placeholder="<?php _e('站点链接(不带http)'); ?>" required>
+			<input type="text" id="linktoken" name="linktoken" value="<?php if(@$linktoken!=''){echo $linktoken;}else{echo @$setbaidusubmit['linktoken'];} ?>" placeholder="<?php _e('站点token'); ?>" required>
+			<input type="text" id="appid" name="appid" value="<?php if(@$appid!=''){echo $appid;}else{echo @$setbaidusubmit['appid'];} ?>" placeholder="<?php _e('熊掌号appid'); ?>">
+			<input type="text" id="resctoken" name="resctoken" type="text" value="<?php if(@$resctoken!=''){echo $resctoken;}else{echo @$setbaidusubmit['resctoken'];} ?>" placeholder="<?php _e('熊掌号token'); ?>">
+		  </fieldset>
+		  <input type="hidden" name="action" value="setbaidusubmit" />
+		  <button id="setbaidusubmit" type="button" class="am-btn am-btn-primary am-btn-block"><?php _e('修改设置'); ?></button>
 		</form>
+	  </div>
 	</div>
-	<div class="mdui-table-fluid">
-	  <table class="mdui-table mdui-table-hoverable">
+	
+	<div class="am-scrollable-horizontal">
+	  <table class="am-table am-table-bordered am-table-striped am-text-nowrap">
 		<thead>
 		  <tr>
-			<th class="mdui-table-col-numeric">文章</th>
-			<th class="mdui-table-col-numeric">提交网址状态</th>
-			<th class="mdui-table-col-numeric">提交熊掌号状态</th>
-			<th class="mdui-table-col-numeric">操作网址</th>
-			<th class="mdui-table-col-numeric">操作熊掌号</th>
+			<th>文章</th>
+			<th>提交网址状态</th>
+			<th>提交熊掌号状态</th>
+			<th>操作网址</th>
+			<th>操作熊掌号</th>
 		  </tr>
-		</thead>
-		<tbody>
+		  </thead>
+		  <tbody>
 		<?php
-		$query = $this->db->select()->from('table.contents')->join('table.multi_baidusubmit', 'table.contents.cid = table.multi_baidusubmit.bscid',Typecho_Db::LEFT_JOIN)->where('table.contents.status != ?', 'hidden')->order('modified',Typecho_Db::SORT_DESC)->page(1,20);
+		$queryTotal = $this->db->select()->from('table.contents')->join('table.multi_baidusubmit', 'table.contents.cid = table.multi_baidusubmit.bscid',Typecho_Db::LEFT_JOIN)->where('table.contents.status != ?', 'hidden');
+		$rowsTotal = $this->db->fetchAll($queryTotal);
+		$page_now = isset($_GET['page_now']) ? intval($_GET['page_now']) : 1;
+		if($page_now<1){
+			$page_now=1;
+		}
+		$page_rec=$this->parameter->pageSize;
+		$totalrec=count($rowsTotal);
+		$page=ceil($totalrec/$page_rec);
+		if($page_now>$page){
+			$page_now=$page;
+		}
+		if($page_now<=1){
+			$before_page=1;
+			if($page>1){
+				$after_page=$page_now+1;
+			}else{
+				$after_page=1;
+			}
+		}else{
+			$before_page=$page_now-1;
+			if($page_now<$page){
+				$after_page=$page_now+1;
+			}else{
+				$after_page=$page;
+			}
+		}
+		$i=($page_now-1)*$page_rec<0?0:($page_now-1)*$page_rec;
+		$query = $this->db->select()->from('table.contents')->join('table.multi_baidusubmit', 'table.contents.cid = table.multi_baidusubmit.bscid',Typecho_Db::LEFT_JOIN)->where('table.contents.status != ?', 'hidden')->order('modified',Typecho_Db::SORT_DESC)->offset($i)->limit($page_rec);
 		$rows = $this->db->fetchAll($query);
 		if(count($rows)>0){
 			foreach($rows as $row){
@@ -130,8 +145,8 @@ if($action=='setbaidusubmit'){
 				$permalink=str_replace('{cid}',$row['cid'],$val['permalink']);
 			?>
 			  <tr>
-				<td class="mdui-table-col-numeric"><a href="<?=$permalink;?>"><?=$row['title'];?></a></td>
-				<td class="mdui-table-col-numeric">
+				<td><a href="<?=$permalink;?>"><?=$row['title'];?></a></td>
+				<td>
 					<?php
 					if($row['linkstatus']==''){
 						echo '未提交';
@@ -142,7 +157,7 @@ if($action=='setbaidusubmit'){
 					}
 					?>
 				</td>
-				<td class="mdui-table-col-numeric">
+				<td>
 					<?php
 					if($row['rescstatus']==''){
 						echo '未提交';
@@ -153,7 +168,7 @@ if($action=='setbaidusubmit'){
 					}
 					?>
 				</td>
-				<td class="mdui-table-col-numeric">
+				<td>
 					<?php
 					if($row['linkstatus']==''){
 						echo '<a href="javascript:;"><span class="baidusubmit" id="baidusubmit'.$row['cid'].'" data-url="'.$permalink.'" data-cid="'.$row['cid'].'" data-pluginsname="'.$pluginsname.'">提交网址</span></a>';
@@ -183,12 +198,27 @@ if($action=='setbaidusubmit'){
 		</tbody>
 	  </table>
 	</div>
+	<ul class="am-pagination blog-pagination">
+	  <?php if($page_now!=1){?>
+		<li class="am-pagination-prev"><a href="<?=$url;?>?page_now=1">首页</a></li>
+	  <?php }?>
+	  <?php if($page_now>1){?>
+		<li class="am-pagination-prev"><a href="<?=$url;?>?page_now=<?=$before_page;?>">&laquo; 上一页</a></li>
+	  <?php }?>
+	  <?php if($page_now<$page){?>
+		<li class="am-pagination-next"><a href="<?=$url;?>?page_now=<?=$after_page;?>">下一页 &raquo;</a></li>
+	  <?php }?>
+	  <?php if($page_now!=$page){?>
+		<li class="am-pagination-next"><a href="<?=$url;?>?page_now=<?=$page;?>">尾页</a></li>
+	  <?php }?>
+	</ul>
 </section>
 <!-- end content section -->
 
 <script>
 $("#setbaidusubmit").click(function(){
 	if($("#url").val()==''||$("#linktoken").val()==''){
+		alert('至少要配置上站点链接和站点token');
 		return; 
 	}
 	$('form').submit();
