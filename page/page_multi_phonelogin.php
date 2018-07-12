@@ -58,19 +58,27 @@ if ($this->user->hasLogin()) {
 		  <div class="am-u-md-8 am-u-sm-centered">
 			<form class="am-form" method="post" action="">
 			  <fieldset class="am-form-set">
-				<input type="text" name="accessKeyId" required value="<?php if(@$accessKeyId!=''){echo $accessKeyId;}else{echo @$setphonelogin['accessKeyId'];} ?>" placeholder="阿里云短信服务AccessKeyID">
-				<input type="text" name="accessKeySecret" required value="<?php if(@$accessKeySecret!=''){echo $accessKeySecret;}else{echo @$setphonelogin['accessKeySecret'];} ?>" placeholder="阿里云短信服务AccessKeySecret">
 				<div class="am-form-group">
+					<input type="text" name="accessKeyId" required value="<?php if(@$accessKeyId!=''){echo $accessKeyId;}else{echo @$setphonelogin['accessKeyId'];} ?>" placeholder="阿里云短信服务AccessKeyID">
+				</div>
+				<div class="am-form-group">
+					<input type="text" name="accessKeySecret" required value="<?php if(@$accessKeySecret!=''){echo $accessKeySecret;}else{echo @$setphonelogin['accessKeySecret'];} ?>" placeholder="阿里云短信服务AccessKeySecret">
+				</div>
+				<div class="am-form-group" style="background-color:#fff;">
 				  <span>前台文章url是否存在index.php：</span>
 				  <label class="am-radio-inline">
-					<input type="radio" name="isindex" value="y" data-am-ucheck <?php if(@$setphonelogin['isindex']=='y'){echo 'checked';}else if(@$setphonelogin['isindex']==''){if(@$isindex=='y'){echo 'checked';}} ?>> 存在
+					<input type="radio" name="isindex" value="y" data-am-ucheck <?php if(!@$setphonelogin||@$setphonelogin['isindex']=='y'){echo 'checked';} ?>> 存在
 				  </label>
 				  <label class="am-radio-inline">
-					<input type="radio" name="isindex" value="n" data-am-ucheck <?php if(@$setphonelogin['isindex']=='n'){echo 'checked';}else if(@$setphonelogin['isindex']==''){if(@$isindex=='n'){echo 'checked';}} ?>>不存在
+					<input type="radio" name="isindex" value="n" data-am-ucheck <?php if(@$setphonelogin['isindex']=='n'){echo 'checked';} ?>>不存在
 				  </label>
 				</div>
-				<input type="text" name="templatecode" required value="<?php if(@$templatecode!=''){echo $templatecode;}else{echo @$setphonelogin['templatecode'];} ?>" placeholder="阿里云短信服务模版CODE">
-				<input type="text" name="signname" value="<?php if(@$signname!=''){echo $signname;}else{echo @$setphonelogin['signname'];} ?>" placeholder="阿里云短信服务签名名称">
+				<div class="am-form-group">
+					<input type="text" name="templatecode" required value="<?php if(@$templatecode!=''){echo $templatecode;}else{echo @$setphonelogin['templatecode'];} ?>" placeholder="阿里云短信服务模版CODE">
+				</div>
+				<div class="am-form-group">
+					<input type="text" name="signname" value="<?php if(@$signname!=''){echo $signname;}else{echo @$setphonelogin['signname'];} ?>" placeholder="阿里云短信服务签名名称">
+				</div>
 			  </fieldset>
 			  <input type="hidden" value="submit" required name="action" />
 			  <button type="submit" class="am-btn am-btn-primary am-btn-block">注册个账号</button>

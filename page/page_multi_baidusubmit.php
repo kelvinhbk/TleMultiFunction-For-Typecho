@@ -70,9 +70,9 @@ if($action=='setbaidusubmit'){
 	}
 }
 if(strpos($this->permalink,'?')){
-	$url=substr($this->permalink,0,strpos($this->permalink,'?'));
+	$pageurl=substr($this->permalink,0,strpos($this->permalink,'?'));
 }else{
-	$url=$this->permalink;
+	$pageurl=$this->permalink;
 }
 ?>
 
@@ -200,16 +200,16 @@ if(strpos($this->permalink,'?')){
 	</div>
 	<ul class="am-pagination blog-pagination">
 	  <?php if($page_now!=1){?>
-		<li class="am-pagination-prev"><a href="<?=$url;?>?page_now=1">首页</a></li>
+		<li class="am-pagination-prev"><a href="<?=$pageurl;?>?page_now=1">首页</a></li>
 	  <?php }?>
 	  <?php if($page_now>1){?>
-		<li class="am-pagination-prev"><a href="<?=$url;?>?page_now=<?=$before_page;?>">&laquo; 上一页</a></li>
+		<li class="am-pagination-prev"><a href="<?=$pageurl;?>?page_now=<?=$before_page;?>">&laquo; 上一页</a></li>
 	  <?php }?>
 	  <?php if($page_now<$page){?>
-		<li class="am-pagination-next"><a href="<?=$url;?>?page_now=<?=$after_page;?>">下一页 &raquo;</a></li>
+		<li class="am-pagination-next"><a href="<?=$pageurl;?>?page_now=<?=$after_page;?>">下一页 &raquo;</a></li>
 	  <?php }?>
 	  <?php if($page_now!=$page){?>
-		<li class="am-pagination-next"><a href="<?=$url;?>?page_now=<?=$page;?>">尾页</a></li>
+		<li class="am-pagination-next"><a href="<?=$pageurl;?>?page_now=<?=$page;?>">尾页</a></li>
 	  <?php }?>
 	</ul>
 </section>
