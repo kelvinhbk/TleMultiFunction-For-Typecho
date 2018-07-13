@@ -3,9 +3,9 @@
  * Typecho多功能插件集成多项功能，有问题可咨询微信：Diamond0422。
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.9
+ * @version 1.0.10
  * @link http://www.tongleer.com/
- * @date 2018-07-12
+ * @date 2018-07-13
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
@@ -430,7 +430,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		if(!strpos($rs,'没有找到')){
 			$content="<p align=right>百度已收录(仅管理员可见)</p>".$content; 
 		}else{
-			$content="<p align=right><b><a style=color:red target=_blank href=http://zhanzhang.baidu.com/sitesubmit/index?sitename=".get_permalink().">百度未收录!点击此处提交</a></b>(仅管理员可见)</p>".$content;
+			$content="<p align=right><b><a style=color:red target=_blank href=http://zhanzhang.baidu.com/sitesubmit/index?sitename=".$obj->permalink.">百度未收录!点击此处提交</a></b>(仅管理员可见)</p>".$content;
 		}
 		return $content;
 	}
