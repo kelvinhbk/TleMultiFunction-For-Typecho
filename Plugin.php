@@ -63,7 +63,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $baidu_submit = new Typecho_Widget_Helper_Form_Element_Radio('baidu_submit', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('百度链接提交（可选：链接检测请把&lt;?php if($this->user->pass("administrator")){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'), _t("启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'y', _t('百度链接提交（可选：链接检测请把&lt;?php if($this->user->pass("administrator",true)){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'), _t("启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($baidu_submit->addRule('enum', _t(''), array('y', 'n')));
 		
 		//短网址模块
