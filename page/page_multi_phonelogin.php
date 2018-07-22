@@ -246,11 +246,11 @@ if ($this->user->hasLogin()) {
 		$('form').submit();
 	});
 	var timer;
-	var countdown=3;
+	var countdown=60;
 	function settime() {
 		if (countdown == 0) {
 			$("#sendsmsmsg").html("刷新页面重新发送");
-			countdown = 3;
+			countdown = 60;
 			clearTimeout(timer);
 			return;
 		} else {
