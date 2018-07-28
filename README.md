@@ -1,4 +1,4 @@
-### Typecho-TleMultiFunction For Typecho V1.0.10多功能插件
+### Typecho-TleMultiFunction For Typecho V1.0.11多功能插件
 ---
 
 Typecho多功能插件
@@ -24,6 +24,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-07-29 优化帖子内容显示<br />
 2018-07-13 修改了百度提交代码的小错误<br />
 2018-07-12 新增自动提交百度链接、优化百度提交记录页面。<br />
 2018-07-05 新增了手机号注册模块、插件升级检测让你一直使用最新版本。<br />

@@ -364,9 +364,9 @@ if($action=='login'){
 	}
 	$i=($page_now-1)*$page_rec<0?0:($page_now-1)*$page_rec;
 	if($mid==0){
-		$query= "select * from ".$this->db->getPrefix()."contents left join ".$this->db->getPrefix()."relationships on ".$this->db->getPrefix()."contents.cid = ".$this->db->getPrefix()."relationships.cid left join ".$this->db->getPrefix()."users on ".$this->db->getPrefix()."contents.authorId = ".$this->db->getPrefix()."users.uid where ".$this->db->getPrefix()."contents.type='post'".$keyword." order by modified desc limit ".$i.",".$page_rec;
+		$query= "select * from ".$this->db->getPrefix()."contents left join ".$this->db->getPrefix()."relationships on ".$this->db->getPrefix()."contents.cid = ".$this->db->getPrefix()."relationships.cid left join ".$this->db->getPrefix()."metas on ".$this->db->getPrefix()."relationships.mid = ".$this->db->getPrefix()."metas.mid left join ".$this->db->getPrefix()."users on ".$this->db->getPrefix()."contents.authorId = ".$this->db->getPrefix()."users.uid where ".$this->db->getPrefix()."contents.type='post' and ".$this->db->getPrefix()."metas.type='category'".$keyword." order by modified desc limit ".$i.",".$page_rec;
 	}else{
-		$query= "select * from ".$this->db->getPrefix()."contents left join ".$this->db->getPrefix()."relationships on ".$this->db->getPrefix()."contents.cid = ".$this->db->getPrefix()."relationships.cid left join ".$this->db->getPrefix()."users on ".$this->db->getPrefix()."contents.authorId = ".$this->db->getPrefix()."users.uid where ".$this->db->getPrefix()."contents.type='post' and ".$this->db->getPrefix()."relationships.mid=".$mid.$keyword." order by modified desc limit ".$i.",".$page_rec;
+		$query= "select * from ".$this->db->getPrefix()."contents left join ".$this->db->getPrefix()."relationships on ".$this->db->getPrefix()."contents.cid = ".$this->db->getPrefix()."relationships.cid left join ".$this->db->getPrefix()."metas on ".$this->db->getPrefix()."relationships.mid = ".$this->db->getPrefix()."metas.mid left join ".$this->db->getPrefix()."users on ".$this->db->getPrefix()."contents.authorId = ".$this->db->getPrefix()."users.uid where ".$this->db->getPrefix()."contents.type='post' and ".$this->db->getPrefix()."metas.type='category' and ".$this->db->getPrefix()."relationships.mid=".$mid.$keyword." order by modified desc limit ".$i.",".$page_rec;
 	}
 	$result = $this->db->fetchAll($query);
 	if(count($result)>0){
@@ -377,7 +377,7 @@ if($action=='login'){
 			<small>
 				<font color="#ffaa00">
 					<?php
-						$queryMetas= $this->db->select('name')->from('table.metas')->where('mid = ?', $value['mid']);
+						$queryMetas= $this->db->select('name')->from('table.metas')->where('type = ?', 'category')->where('mid = ?', $value['mid']);
 						$rowMetas = $this->db->fetchRow($queryMetas);
 						echo $rowMetas['name'];
 					?>
@@ -480,32 +480,11 @@ if($action=='login'){
 		<article class="blog-main">
 			<?php
 				$content=$row['text'];
-				$i=0;
-				$match_1 = "/(\!\[).*?((.gif)|(.jpg)|(.bmp)|(.png)|(.GIF)|(.JPG)|(.PNG)|(.BMP))\]\[(\d)\]/";
-				preg_match_all ($match_1,$row['text'],$matches_1,PREG_PATTERN_ORDER);
-				if(count($matches_1)>0&&count($matches_1[0])>0){
-					foreach($matches_1[0] as $val_1){
-						$content=str_replace($val_1,"",$content);
-						$img_prefix=substr($val_1,strlen($val_1)- 3,3);
-						$img_prefix=str_replace("[","\[",$img_prefix);
-						$img_prefix=str_replace("]","\]",$img_prefix);
-						$match_2 = "/(".$img_prefix.":).*?((.gif)|(.jpg)|(.bmp)|(.png)|(.GIF)|(.JPG)|(.PNG)|(.BMP))/";
-						preg_match_all ($match_2,$content,$matches_2,PREG_PATTERN_ORDER);
-						if(count($matches_2)>0&&count($matches_2[0])>0){
-							foreach($matches_2[0] as $val_2){
-								$img=substr($val_2,4);
-								$content=preg_replace($match_2,'<img src="'.$img.'" />',$content);
-								break;
-							}
-						}else{
-							$content=$row['text'];
-							break;
-						}
-						$i++;
-					}
-				}else{
-					$content=$row['text'];
+				if(strpos($content, '<!--markdown-->')===0){
+					$content=substr($content,15);
 				}
+				$content=Markdown::convert($content);
+				$content = str_replace("<img ", "<img width=\"100%\"", $content);
 				echo $content;
 			?>
 		</article>
