@@ -25,12 +25,12 @@ $sitetitle = isset($_POST['sitetitle']) ? addslashes(trim($_POST['sitetitle'])) 
 $pluginsname = isset($_POST['pluginsname']) ? addslashes(trim($_POST['pluginsname'])) : '';
 
 $setphonelogin=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../../plugins/'.$pluginsname.'/config/setphonelogin.php'),'<?php die; ?>'));
-var_dump(sendSms($setphonelogin['accessKeyId'],$setphonelogin['accessKeySecret'],$setphonelogin['templatecode'],$setphonelogin['signname'],$name,$sitetitle,$_SESSION['code']));
+var_dump(sendSms($setphonelogin['accessKeyId'],$setphonelogin['accessKeySecret'],$setphonelogin['templatecode'],$setphonelogin['signname'],$name,$sitetitle,$_SESSION['code'],$setphonelogin['iscontain']));
 
 /**
  * 发送短信
  */
-function sendSms($accessKeyId,$accessKeySecret,$templatecode,$signname,$name,$sitetitle,$code) {
+function sendSms($accessKeyId,$accessKeySecret,$templatecode,$signname,$name,$sitetitle,$code,$iscontain) {
     $params = array ();
     // *** 需用户填写部分 ***
     // fixme 必填: 请参阅 https://ak-console.aliyun.com/ 取得您的AK信息
@@ -41,10 +41,16 @@ function sendSms($accessKeyId,$accessKeySecret,$templatecode,$signname,$name,$si
     // fixme 必填: 短信模板Code，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template
     $params["TemplateCode"] = $templatecode;
     // fixme 可选: 设置模板参数, 假如模板中存在变量需要替换则为必填项
-    $params['TemplateParam'] = Array (
-        "code" => $code,
-        "product" => $sitetitle
-    );
+    if($iscontain=="y"){
+		$params['TemplateParam'] = Array (
+			"code" => $code,
+			"product" => $sitetitle
+		);
+	}else{
+		$params['TemplateParam'] = Array (
+			"code" => $code
+		);
+	}
     // fixme 可选: 设置发送短信流水号
     $params['OutId'] = "12345";
     // fixme 可选: 上行短信扩展码, 扩展码字段控制在7位或以下，无特殊需求用户请忽略此字段

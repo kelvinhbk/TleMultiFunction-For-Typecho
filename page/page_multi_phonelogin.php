@@ -39,13 +39,15 @@ if ($this->user->hasLogin()) {
 			$accessKeyId = isset($_POST['accessKeyId']) ? addslashes(trim($_POST['accessKeyId'])) : '';
 			$accessKeySecret = isset($_POST['accessKeySecret']) ? addslashes(trim($_POST['accessKeySecret'])) : '';
 			$isindex = isset($_POST['isindex']) ? addslashes(trim($_POST['isindex'])) : '';
+			$iscontain = isset($_POST['iscontain']) ? addslashes(trim($_POST['iscontain'])) : '';
 			$templatecode = isset($_POST['templatecode']) ? addslashes(trim($_POST['templatecode'])) : '';
 			$signname = isset($_POST['signname']) ? addslashes(trim($_POST['signname'])) : '';
-			if($accessKeyId&&$accessKeySecret&&$isindex&&$templatecode&&$signname){
+			if($accessKeyId&&$accessKeySecret&&$isindex&&$iscontain&&$templatecode&&$signname){
 				file_put_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setphonelogin.php','<?php die; ?>'.serialize(array(
 					'accessKeyId'=>$accessKeyId,
 					'accessKeySecret'=>$accessKeySecret,
 					'isindex'=>$isindex,
+					'iscontain'=>$iscontain,
 					'templatecode'=>$templatecode,
 					'signname'=>$signname
 				)));
@@ -73,6 +75,15 @@ if ($this->user->hasLogin()) {
 					<input type="radio" name="isindex" value="n" data-am-ucheck <?php if(@$setphonelogin['isindex']=='n'){echo 'checked';} ?>>不存在
 				  </label>
 				</div>
+				<div class="am-form-group" style="background-color:#fff;">
+				  <span>阿里云短信模板是否包含产品名：</span>
+				  <label class="am-radio-inline">
+					<input type="radio" name="iscontain" value="y" data-am-ucheck <?php if(!@$setphonelogin||@$setphonelogin['iscontain']=='y'){echo 'checked';} ?>> 包含
+				  </label>
+				  <label class="am-radio-inline">
+					<input type="radio" name="iscontain" value="n" data-am-ucheck <?php if(@$setphonelogin['iscontain']=='n'){echo 'checked';} ?>>不包含
+				  </label>
+				</div>
 				<div class="am-form-group">
 					<input type="text" name="templatecode" required value="<?php if(@$templatecode!=''){echo $templatecode;}else{echo @$setphonelogin['templatecode'];} ?>" placeholder="阿里云短信服务模版CODE">
 				</div>
@@ -81,7 +92,7 @@ if ($this->user->hasLogin()) {
 				</div>
 			  </fieldset>
 			  <input type="hidden" value="submit" required name="action" />
-			  <button type="submit" class="am-btn am-btn-primary am-btn-block">注册个账号</button>
+			  <button type="submit" class="am-btn am-btn-primary am-btn-block">修改配置</button>
 			</form>
 		  </div>
 		</div>
@@ -185,13 +196,10 @@ if ($this->user->hasLogin()) {
 		}
 	}
 	?>
-	
-	<link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.4.1/css/mdui.min.css">
-	<script src="//cdn.bootcss.com/mdui/0.4.1/js/mdui.min.js"></script>
 	<!-- content section -->
 	<section>
-		<div class="mdui-shadow-10 mdui-center" style="width:300px;">
-			<form action="" method="post" class="mdui-p-x-1 mdui-p-y-1">
+		<div style="width:300px;margin:0 auto;">
+			<form action="" method="post">
 				<div class="am-panel-hd">
 				  <h4 class="am-panel-title" data-am-collapse="{parent: '#accordion', target: '#do-not-say-1'}">
 					用户注册
@@ -215,53 +223,55 @@ if ($this->user->hasLogin()) {
 	<!-- end content section -->
 	
 	<script>
-	$("#sendsmsmsg").click(function(){
-		var name=$("#name").val();
-		var regexp = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
-		if(!regexp.test(name)){
-			alert('请输入有效的手机号码！'); 
-			return false; 
-		}
-		settime();
-		$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/sendsms.php",{name:name,sitetitle:$('#sitetitle').val(),pluginsname:$('#pluginsname').val()},function(data){
-			if(data=='toofast'){
-				alert('发送频率太快了~');
-				clearTimeout(timer);
-				settime();
+	$(function(){
+		$("#sendsmsmsg").click(function(){
+			var name=$("#name").val();
+			var regexp = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+			if(!regexp.test(name)){
+				alert('请输入有效的手机号码！'); 
+				return false; 
 			}
+			settime();
+			$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/sendsms.php",{name:name,sitetitle:$('#sitetitle').val(),pluginsname:$('#pluginsname').val()},function(data){
+				if(data=='toofast'){
+					alert('发送频率太快了~');
+					clearTimeout(timer);
+					settime();
+				}
+			});
 		});
-	});
-	$("#reg").click(function(e){
-		var name=$("#name").val();
-		var regexp = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
-		if(!regexp.test(name)){
-			alert('请输入有效的手机号码！'); 
-			return; 
+		$("#reg").click(function(e){
+			var name=$("#name").val();
+			var regexp = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/; 
+			if(!regexp.test(name)){
+				alert('请输入有效的手机号码！'); 
+				return; 
+			}
+			var yzm = $("input[name=code]").val().replace(/(^\s*)|(\s*$)/g, "");
+			if(yzm==""){
+				alert("请输入短信验证码");
+				return;
+			}
+			$('form').submit();
+		});
+		var timer;
+		var countdown=60;
+		function settime() {
+			if (countdown == 0) {
+				$("#sendsmsmsg").html("刷新页面重新发送");
+				countdown = 60;
+				clearTimeout(timer);
+				return;
+			} else {
+				$("#sendsmsmsg").html(countdown+"秒");
+				$("#sendsmsmsg").unbind("click");
+				countdown--; 
+			} 
+			timer=setTimeout(function() { 
+				settime() 
+			},1000) 
 		}
-		var yzm = $("input[name=code]").val().replace(/(^\s*)|(\s*$)/g, "");
-		if(yzm==""){
-			alert("请输入短信验证码");
-			return;
-		}
-		$('form').submit();
 	});
-	var timer;
-	var countdown=60;
-	function settime() {
-		if (countdown == 0) {
-			$("#sendsmsmsg").html("刷新页面重新发送");
-			countdown = 60;
-			clearTimeout(timer);
-			return;
-		} else {
-			$("#sendsmsmsg").html(countdown+"秒");
-			$("#sendsmsmsg").unbind("click");
-			countdown--; 
-		} 
-		timer=setTimeout(function() { 
-			settime() 
-		},1000) 
-	}
 	</script>
 <?php
 }
