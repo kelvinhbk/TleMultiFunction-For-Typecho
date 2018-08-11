@@ -86,6 +86,14 @@ if ($this->user->hasLogin()) {
 				</div>
 				<div class="am-form-group">
 					<input type="text" name="templatecode" required value="<?php if(@$templatecode!=''){echo $templatecode;}else{echo @$setphonelogin['templatecode'];} ?>" placeholder="阿里云短信服务模版CODE">
+					<small>
+						若包含产品名变量，则需要新建模板内容为：<br />
+						<b>验证码${code}，您正在进行${product}身份验证，打死不要告诉别人哦！</b><br />
+						的形式；<br />
+						否则为<br />
+						<b>您正在进行身份验证，您的验证码是${code}，打死不要告诉别人哦！</b><br />
+						的形式。
+					</small>
 				</div>
 				<div class="am-form-group">
 					<input type="text" name="signname" value="<?php if(@$signname!=''){echo $signname;}else{echo @$setphonelogin['signname'];} ?>" placeholder="阿里云短信服务签名名称">
