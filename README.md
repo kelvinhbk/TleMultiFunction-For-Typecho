@@ -1,4 +1,4 @@
-### Typecho-TleMultiFunction For Typecho V1.0.11多功能插件
+### Typecho-TleMultiFunction For Typecho 多功能插件
 ---
 
 Typecho多功能插件
@@ -24,6 +24,7 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2018-08-11 修改了阿里云新短信模板不包含产品名变量时发送短信的情况<br />
 2018-07-29 优化帖子内容显示<br />
 2018-07-13 修改了百度提交代码的小错误<br />
 2018-07-12 新增自动提交百度链接、优化百度提交记录页面。<br />
