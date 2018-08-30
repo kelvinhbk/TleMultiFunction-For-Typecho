@@ -468,7 +468,7 @@ if($action=='login'){
 		  <label for=""></label>
 		  <select name="mid">
 			<?php
-			$queryCate= "select * from ".$this->db->getPrefix()."metas where parent!=0";
+			$queryCate= "select * from ".$this->db->getPrefix()."metas where parent=0 AND type='category'";
 			$resultCate = $this->db->fetchAll($queryCate);
 			$metasnum=1;
 			foreach($resultCate as $value){
@@ -715,7 +715,7 @@ if($action=='login'){
 					  <label for=""></label>
 					  <select name="mid">
 						<?php
-						$queryCate= "select * from ".$this->db->getPrefix()."metas where parent!=0";
+						$queryCate= "select * from ".$this->db->getPrefix()."metas where parent=0 AND type='category'";
 						$resultCate = $this->db->fetchAll($queryCate);
 						$metasnum=1;
 						foreach($resultCate as $value){
