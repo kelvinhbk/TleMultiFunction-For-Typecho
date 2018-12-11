@@ -395,40 +395,19 @@ if($action=='login'){
 			<div class="am-u-sm-12">
 			  <?php
 				$content=$value['text'];
-				/*
-				$i=0;
-				$match_1 = "/(\!\[).*?\]\[(\d)\]/";
-				preg_match_all ($match_1,$content,$matches_1,PREG_PATTERN_ORDER);
-				if(count($matches_1)>0&&count($matches_1[0])>0){
-					foreach($matches_1[0] as $val_1){
-						$content=str_replace($val_1,"",$content);
-						$img_prefix=substr($val_1,strlen($val_1)- 3,3);
-						$img_prefix=str_replace("[","\[",$img_prefix);
-						$img_prefix=str_replace("]","\]",$img_prefix);
-						$match_2 = "/(".$img_prefix.":).*?((.gif)|(.jpg)|(.bmp)|(.png)|(.GIF)|(.JPG)|(.PNG)|(.BMP))/";
-						preg_match_all ($match_2,$content,$matches_2,PREG_PATTERN_ORDER);
-						if(count($matches_2)>0&&count($matches_2[0])>0){
-							foreach($matches_2[0] as $val_2){
-								$img=substr($val_2,4);
-								$content=preg_replace($match_2,'<img src="'.$img.'" />',$content);
-								break;
-							}
-						}else{
-							break;
-						}
-						$i++;
-					}
-				}
-				*/
 				if(strpos($content, '<!--markdown-->')===0){
 					$content=substr($content,15);
 				}
 				$content=Markdown::convert($content);
-				$pregRule = "/<[img|IMG].*?src=[\'|\"](.*?(?:[\.jpg|\.jpeg|\.png|\.gif|\.bmp]))[\'|\"].*?[\/]?>/";
-				$content = preg_replace($pregRule, '', $content);
-				//$content = str_replace("<img ", "<img width=\"100%\"", $content);//strip_tags
+				preg_match_all("/<(img|IMG).*?src=[\'|\"](.*?)[\'|\"].*?[\/]?>/", $content, $pregRule);
+				if($pregRule[0]!=null){
+					$content1='<img src="'.$pregRule[2][0].'" width="100%" alt="" />';
+					$content2 = str_replace($pregRule[0][0], '', $content);
+					$content2=Typecho_Common::subStr($content2, 0, 140, '...');
+					$content=$content1.$content2;
+				}
 			  ?>
-			  <p><?php echo Typecho_Common::subStr($content, 0, 140, '...');?></p>
+			  <p><?php echo $content;?></p>
 			</div>
 		  </div>
 		</article>
