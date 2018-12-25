@@ -174,7 +174,7 @@ if ($this->user->hasLogin()) {
 						'mail'      =>  $name.'@tongleer.com',
 						'screenName'=>  $name,
 						'password'  =>  $hasher->HashPassword($generatedPassword),
-						'created'   =>  $this->options->time,
+						'created'   =>  time(),
 						'group'     =>  'subscriber'
 					);
 					

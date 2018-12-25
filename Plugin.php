@@ -1,6 +1,6 @@
 <?php
 /**
- * Typecho多功能插件集成多项功能，有问题可咨询微信：Diamond0422。
+ * Typecho多功能插件集成多项功能。
  * @package TleMultiFunction For Typecho
  * @author 二呆
  * @version 1.0.13
@@ -63,35 +63,35 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $baidu_submit = new Typecho_Widget_Helper_Form_Element_Radio('baidu_submit', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('百度链接提交（可选：链接检测请把&lt;?php if($this->user->pass("administrator",true)){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'), _t("启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'n', _t('百度链接提交'), _t('1、启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。<br />2、（可选：链接检测请把&lt;?php if($this->user->pass("administrator",true)){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'));
         $form->addInput($baidu_submit->addRule('enum', _t(''), array('y', 'n')));
 		
 		//短网址模块
         $dwz = new Typecho_Widget_Helper_Form_Element_Radio('dwz', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('短网址缩短'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_dwz数据表、page_multi_dwz.php主题文件、短网址页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'n', _t('短网址缩短'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_dwz数据表、page_multi_dwz.php主题文件、短网址页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($dwz->addRule('enum', _t(''), array('y', 'n')));
 		
 		//论坛模块
         $bbs = new Typecho_Widget_Helper_Form_Element_Radio('bbs', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('论坛'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_bbs.php主题文件、论坛页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'n', _t('论坛'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_bbs.php主题文件、论坛页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($bbs->addRule('enum', _t(''), array('y', 'n')));
 		
 		//第三方登录模块
 		$oauthlogin = new Typecho_Widget_Helper_Form_Element_Radio('oauthlogin', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('第三方登录'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_oauthlogin数据表、page_multi_oauthlogin.php主题文件、第三方登录页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'n', _t('第三方登录'), _t("启用后可前往页面进一步配置短网址缩短的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_oauthlogin数据表、page_multi_oauthlogin.php主题文件、第三方登录页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($oauthlogin->addRule('enum', _t(''), array('y', 'n')));
 		
 		//手机号登录模块
 		$phonelogin = new Typecho_Widget_Helper_Form_Element_Radio('phonelogin', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'y', _t('手机号登录'), _t("启用后可前往页面进一步配置手机号登录的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_phonelogin.php主题文件、手机号登录页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
+        ), 'n', _t('手机号登录'), _t("启用后可前往页面进一步配置手机号登录的相关参数，为您做到心中有数，启用后会创建".$prefix."page_multi_phonelogin.php主题文件、手机号登录页面2项，以提供多功能服务，不会添加任何无用项目，谢谢支持。"));
         $form->addInput($phonelogin->addRule('enum', _t(''), array('y', 'n')));
 	
 		$user = @isset($_POST['user']) ? addslashes(trim($_POST['user'])) : '';
@@ -204,14 +204,14 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		$prefix = $db->getPrefix();
 		//$db->query('DROP TABLE IF EXISTS '.$prefix.'multi_baidusubmit');
 		$db->query('CREATE TABLE IF NOT EXISTS '.$prefix.'multi_oauthlogin(
-			`oauthid` varchar(64) COLLATE utf8_bin NOT NULL,
-			`oauthuid` bigint(20) COLLATE utf8_bin NOT NULL,
-		    `oauthnickname` varchar(64) COLLATE utf8_bin DEFAULT NULL,
-		    `oauthfigureurl` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-		    `oauthgender` varchar(8) COLLATE utf8_bin DEFAULT NULL,
-		    `oauthtype` enum("qq","weibo","weixin") COLLATE utf8_bin DEFAULT NULL,
+			`oauthid` varchar(64) COLLATE utf8_general_ci NOT NULL,
+			`oauthuid` bigint(20) COLLATE utf8_general_ci NOT NULL,
+		    `oauthnickname` varchar(64) COLLATE utf8_general_ci DEFAULT NULL,
+		    `oauthfigureurl` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
+		    `oauthgender` varchar(8) COLLATE utf8_general_ci DEFAULT NULL,
+		    `oauthtype` enum("qq","weibo","weixin") COLLATE utf8_general_ci DEFAULT NULL,
 		    PRIMARY KEY (`oauthid`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin');
+		) DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci');
 	}
 	
 	/*创建短网址缩短所用数据表*/
@@ -225,7 +225,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 			`isred` enum("y","n") DEFAULT "n",
 			`instime` datetime DEFAULT NULL COMMENT "插入时间",
 			PRIMARY KEY (`shortid`)
-		) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8');
+		) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8');
 	}
 	
 	/*创建百度链接提交所用数据表*/
@@ -235,13 +235,13 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		$db->query('CREATE TABLE IF NOT EXISTS '.$prefix.'multi_baidusubmit(
 			`bsid` int(11) NOT NULL AUTO_INCREMENT,
 			`bscid` int(11) NOT NULL,
-			`url` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+			`url` varchar(200) COLLATE utf8_general_ci DEFAULT NULL,
 			`linkstatus` varchar(3) DEFAULT NULL,
 			`rescstatus` varchar(3) DEFAULT NULL,
 			`instime` datetime DEFAULT NULL,
-			`error` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+			`error` varchar(255) COLLATE utf8_general_ci DEFAULT NULL,
 			PRIMARY KEY (`bsid`)
-		) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8');
+		) AUTO_INCREMENT=1 DEFAULT CHARSET=utf8');
 	}
 	
 	/*公共方法：将页面写入数据库*/
@@ -252,7 +252,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 			$contents = array(
 				'title'      =>  $title,
 				'slug'      =>  $slug,
-				'created'   =>  Typecho_Date::time(),
+				'created'   =>  time(),
 				'text'=>  '<!--markdown-->',
 				'password'  =>  '',
 				'authorId'     =>  Typecho_Cookie::get('__typecho_uid'),
@@ -391,7 +391,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 				$result = array(
 					'bscid'   =>  $matches[0][0],
 					'url'   =>  $widget->permalink,
-					'instime'     =>  date('Y-m-d H:i:s',Typecho_Date::time()),
+					'instime'     =>  date('Y-m-d H:i:s',time()),
 					'error'     =>  $error,
 					'linkstatus'=>$status
 				);
