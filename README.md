@@ -24,6 +24,10 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2019-01-18 V1.0.14
+
+	部分细节优化
+	
 2018-08-30
 
 	对论坛帖子页内容及内容中的图片格式的显示方式做了优化<br />

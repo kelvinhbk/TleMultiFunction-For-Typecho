@@ -3,9 +3,9 @@
  * Typecho多功能插件集成多项功能。
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.13
+ * @version 1.0.14
  * @link http://www.tongleer.com/
- * @date 2018-08-30
+ * @date 2019-01-18
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
@@ -42,7 +42,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
     // 插件配置面板
     public static function config(Typecho_Widget_Helper_Form $form){
 		//版本检查
-		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=13');
+		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=14');
 		$div=new Typecho_Widget_Helper_Layout();
 		$div->html('版本检查：'.$version);
 		$div->render();
@@ -63,7 +63,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $baidu_submit = new Typecho_Widget_Helper_Form_Element_Radio('baidu_submit', array(
             'y'=>_t('启用'),
             'n'=>_t('禁用')
-        ), 'n', _t('百度链接提交'), _t('1、启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建".$prefix."multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。<br />2、（可选：链接检测请把&lt;?php if($this->user->pass("administrator",true)){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'));
+        ), 'n', _t('百度链接提交'), _t('1、启用后可前往页面进一步配置百度链接提交的相关参数，为您做到心中有数，启用后会创建'.$prefix.'multi_baidusubmit数据表、page_multi_baidusubmit.php主题文件、百度链接提交页面3项，以提供多功能服务，不会添加任何无用项目，谢谢支持。<br />2、（可选：链接检测请把&lt;?php if($this->user->pass("administrator",true)){echo TleMultiFunction_Plugin::baiduSubmitCheck($this,"");}?>代码放于主题目录下post.php文件的合适位置。）'));
         $form->addInput($baidu_submit->addRule('enum', _t(''), array('y', 'n')));
 		
 		//短网址模块

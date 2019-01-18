@@ -78,10 +78,10 @@ if ($this->user->hasLogin()) {
 				<div class="am-form-group" style="background-color:#fff;">
 				  <span>阿里云短信模板是否包含产品名：</span>
 				  <label class="am-radio-inline">
-					<input type="radio" name="iscontain" value="y" data-am-ucheck <?php if(!@$setphonelogin||@$setphonelogin['iscontain']=='y'){echo 'checked';} ?>> 包含
+					<input type="radio" name="iscontain" value="y" data-am-ucheck <?php if(@$setphonelogin['iscontain']=='y'){echo 'checked';} ?>> 包含
 				  </label>
 				  <label class="am-radio-inline">
-					<input type="radio" name="iscontain" value="n" data-am-ucheck <?php if(@$setphonelogin['iscontain']=='n'){echo 'checked';} ?>>不包含
+					<input type="radio" name="iscontain" value="n" data-am-ucheck <?php if(!@$setphonelogin||@$setphonelogin['iscontain']=='n'){echo 'checked';} ?>>不包含
 				  </label>
 				</div>
 				<div class="am-form-group">

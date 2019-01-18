@@ -24,6 +24,12 @@ if($tleMultiFunction['baidu_submit']=='n'){
 	die('未启用百度链接提交插件');
 }
 $setoauth=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php'),'<?php die; ?>'));
+
+if(strpos($this->permalink,'?')){
+	$url=substr($this->permalink,0,strpos($this->permalink,'?'));
+}else{
+	$url=$this->permalink;
+}
 ?>
 <?php
 $code = isset($_GET['code']) ? addslashes(trim($_GET['code'])) : '';
@@ -95,9 +101,9 @@ if($code!=''&&$state!=''){
 		$generatedPassword = Typecho_Common::randString(7);
 
 		$dataStruct = array(
-			'name'      =>  $name,
-			'mail'      =>  $name.'@tongleer.com',
-			'screenName'=>  $name,
+			'name'      =>  $name."-".time(),
+			'mail'      =>  $name."-".time().'@tongleer.com',
+			'screenName'=>  $name."-".time(),
 			'password'  =>  $hasher->HashPassword($generatedPassword),
 			'created'   =>  time(),
 			'group'     =>  'subscriber'
@@ -231,7 +237,35 @@ if($code!=''&&$state!=''){
 			  </thead>
 			  <tbody>
 				<?php
-				$query= "select * from ".$this->db->getPrefix()."multi_oauthlogin as ol inner join ".$this->db->getPrefix()."users as u on ol.oauthuid = u.uid order by u.created desc";
+				$queryArticle= "select * from ".$this->db->getPrefix()."multi_oauthlogin as ol inner join ".$this->db->getPrefix()."users as u on ol.oauthuid = u.uid";
+				$page_now = isset($_GET['page_now']) ? intval($_GET['page_now']) : 1;
+				if($page_now<1){
+					$page_now=1;
+				}
+				$resultTotal = $this->db->fetchAll($queryArticle);
+				$page_rec=20;
+				$totalrec=count($resultTotal);
+				$page=ceil($totalrec/$page_rec);
+				if($page_now>$page){
+					$page_now=$page;
+				}
+				if($page_now<=1){
+					$before_page=1;
+					if($page>1){
+						$after_page=$page_now+1;
+					}else{
+						$after_page=1;
+					}
+				}else{
+					$before_page=$page_now-1;
+					if($page_now<$page){
+						$after_page=$page_now+1;
+					}else{
+						$after_page=$page;
+					}
+				}
+				$i=($page_now-1)*$page_rec<0?0:($page_now-1)*$page_rec;
+				$query= "select * from ".$this->db->getPrefix()."multi_oauthlogin as ol inner join ".$this->db->getPrefix()."users as u on ol.oauthuid = u.uid order by u.created desc limit ".$i.",".$page_rec;
 				$result = $this->db->fetchAll($query);
 				foreach($result as $value){
 				?>
@@ -249,6 +283,25 @@ if($code!=''&&$state!=''){
 				?>
 			  </tbody>
 			</table>
+			<div>
+			  共 <?=$totalrec;?> 条记录
+			  <div>
+				<ul style="list-style:none">
+				  <?php if($page_now!=1){?>
+					<li style="float:left;margin-right:10px;"><a href="<?=$url;?>?page_now=1">首页</a></li>
+				  <?php }?>
+				  <?php if($page_now>1){?>
+					<li style="float:left;margin-right:10px;"><a href="<?=$url;?>?page_now=<?=$before_page;?>">&laquo; 上一页</a></li>
+				  <?php }?>
+				  <?php if($page_now<$page){?>
+					<li style="float:left;margin-right:10px;"><a href="<?=$url;?>?page_now=<?=$after_page;?>">下一页 &raquo;</a></li>
+				  <?php }?>
+				  <?php if($page_now!=$page){?>
+					<li style="float:left;margin-right:10px;"><a href="<?=$url;?>?page_now=<?=$page;?>">尾页</a></li>
+				  <?php }?>
+				</ul>
+			  </div>
+			</div>
 		  </div>
 			<?php
 		}
