@@ -3,9 +3,9 @@
  * Typecho多功能插件集成多项功能。
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.14
+ * @version 1.0.15
  * @link http://www.tongleer.com/
- * @date 2019-01-18
+ * @date 2019-01-30
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
@@ -42,7 +42,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
     // 插件配置面板
     public static function config(Typecho_Widget_Helper_Form $form){
 		//版本检查
-		$version=file_get_contents('http://api.tongleer.com/interface/TleMultiFunction.php?action=update&version=14');
+		$version=file_get_contents('https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=15');
 		$div=new Typecho_Widget_Helper_Layout();
 		$div->html('版本检查：'.$version);
 		$div->render();
@@ -386,10 +386,8 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 					$error=$arr['message'];
 				}
 				//记录到本地数据库
-				$cidliker=str_replace(Helper::options()->siteUrl,'',$widget->permalink);
-				preg_match_all ("/\d+/",$cidliker,$matches);
 				$result = array(
-					'bscid'   =>  $matches[0][0],
+					'bscid'   =>  $widget->cid,
 					'url'   =>  $widget->permalink,
 					'instime'     =>  date('Y-m-d H:i:s',time()),
 					'error'     =>  $error,

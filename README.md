@@ -24,6 +24,10 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2019-01-30 V1.0.15
+
+	修复了提交带别名的文章和页面后报错的情况
+	
 2019-01-18 V1.0.14
 
 	部分细节优化
