@@ -529,6 +529,14 @@ if($action=='login'){
 				}
 				$content=Markdown::convert($content);
 				$content = str_replace("<img ", "<img width=\"100%\"", $content);
+				
+				//判断是否开启WeMedia付费阅读插件，并隐藏其付费内容
+				if(isset($plugins['activated']['WeMedia'])){
+					if (preg_match_all('/&lt;!--WeMedia start--&gt;([\s\S]*?)&lt;!--WeMedia end--&gt;/i', $content, $hide_content)){
+						$content = str_replace($hide_content[0], "", $content);
+					}
+				}
+				
 				echo $content;
 			?>
 		</article>
