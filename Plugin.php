@@ -3,9 +3,9 @@
  * Typecho多功能插件集成多项功能。
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.15
+ * @version 1.0.16
  * @link http://www.tongleer.com/
- * @date 2019-01-30
+ * @date 2019-03-22
  */
 class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 {
@@ -42,7 +42,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
     // 插件配置面板
     public static function config(Typecho_Widget_Helper_Form $form){
 		//版本检查
-		$version=file_get_contents('https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=15');
+		$version=file_get_contents('https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=16');
 		$div=new Typecho_Widget_Helper_Layout();
 		$div->html('版本检查：'.$version);
 		$div->render();

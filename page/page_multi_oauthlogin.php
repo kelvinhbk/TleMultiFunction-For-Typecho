@@ -165,8 +165,8 @@ if($code!=''&&$state!=''){
 			}
 			?>
 			<script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-			<link rel="stylesheet" href="//cdn.bootcss.com/mdui/0.4.1/css/mdui.min.css">
-			<script src="//cdn.bootcss.com/mdui/0.4.1/js/mdui.min.js"></script>
+			<link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css">
+			<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
 			<!-- content section -->
 			<section>
 				<div class="mdui-shadow-10" style="width:300px;">

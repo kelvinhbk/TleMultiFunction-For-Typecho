@@ -24,6 +24,10 @@ Typecho多功能插件
 Github：https://github.com/muzishanshi/TleMultiFunction-For-Typecho
 
 #### 更新
+2019-03-22 1.0.16
+
+	修复了因cdn.bootcss.com中JS静态资源不可访问导致的js失效的问题。
+	
 2019-01-30 V1.0.15
 
 	修复了提交带别名的文章和页面后报错的情况
