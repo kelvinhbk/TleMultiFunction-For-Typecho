@@ -35,9 +35,9 @@ $setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/
 	<title>短网址_短链接生成_网址缩短工具</title>
     <meta name="keywords" content="缩短网址,网址压缩,网址缩短,短网址,短域名,短地址,短URL,免费缩短网址,短链接生成器,短网址生成,免费缩址,域名伪装,域名转向,网站推广,短链接,长网址变短网址">
 	<meta name="description" content="免费专业的网址缩短服务,在线生成短网址,开放API接口,可批量生成短链接,不限制接口请求数,跳转快,稳定可靠,防屏蔽,防拦截!">
-	<link rel="alternate icon" href="http://www.tongleer.com/wp-content/themes/D8/img/favicon.png" type="image/png" /><link rel="shortcut icon" href="http://www.tongleer.com/wp-content/themes/D8/img/favicon.ico" type="image/x-icon">
+	<link rel="alternate icon" href="https://www.tongleer.com/wp-content/themes/D8/img/favicon.png" type="image/png" /><link rel="shortcut icon" href="https://www.tongleer.com/wp-content/themes/D8/img/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="https://css.letvcdn.com/lc04_yinyue/201612/19/20/00/bootstrap.min.css">
-	<script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+	<script src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 	<style type="text/css"></style>
 	<style type="text/css">
 		*{margin:0;padding:0}

@@ -53,8 +53,8 @@ if($tleMultiFunction['baidu_submit']=='n'){
   <meta property="og:author" content="<?php $this->author(); ?>" />
   <meta property="article:published_time" content="<?php $this->date('Y-m-j'); ?>" />
   <meta property="article:modified_time" content="<?php $this->date('Y-m-j'); ?>" />
-  <link rel="alternate icon" href="http://www.tongleer.com/wp-content/themes/D8/img/favicon.png" type="image/png" />
-  <link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css"/>
+  <link rel="alternate icon" href="https://www.tongleer.com/wp-content/themes/D8/img/favicon.png" type="image/png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/css/amazeui.min.css"/>
   <style>
     @media only screen and (min-width: 1200px) {
       .blog-g-fixed {
@@ -804,10 +804,10 @@ if($action=='login'){
 	</small>
   </p>
 </footer>
-<script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
-<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.ie8polyfill.min.js" type="text/javascript"></script>
-<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.widgets.helper.min.js" type="text/javascript"></script>
+<script src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.ie8polyfill.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.widgets.helper.min.js" type="text/javascript"></script>
 <script src="https://cdn.ckeditor.com/ckeditor5/10.0.1/classic/ckeditor.js"></script>
 <script>
 $(function() {

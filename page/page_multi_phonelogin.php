@@ -27,8 +27,8 @@ if($tleMultiFunction['phonelogin']=='n'){
 $setphonelogin=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setphonelogin.php'),'<?php die; ?>'));
 ?>
 <?php $this->need('header.php'); ?>
-<link rel="stylesheet" href="http://cdn.amazeui.org/amazeui/2.7.2/css/amazeui.min.css"/>
-<script src="http://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/css/amazeui.min.css"/>
+<script src="https://libs.baidu.com/jquery/1.11.1/jquery.min.js"></script>
 <?php
 $db = Typecho_Db::get();
 
@@ -284,5 +284,5 @@ if ($this->user->hasLogin()) {
 <?php
 }
 ?>
-<script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/amazeui/2.7.2/js/amazeui.min.js" type="text/javascript"></script>
 <?php $this->need('footer.php'); ?>

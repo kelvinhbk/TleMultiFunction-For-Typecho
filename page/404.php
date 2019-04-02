@@ -34,7 +34,9 @@ if($shorturl!=''){
 					<div style="background-color:#00aaff;width:100%;margin:0 auto; overflow:hidden;position:fixed;top:0;text-align:center;font-size:15px;">
 						<h1 style="color:#ffffff;word-wrap:break-word">免责声明：本站永久免费！短网址均由用户生成，所跳转网站内容均与本站无关！如其站点违规，本站对其概不负责，亦不承担任何法律责任。</h1>
 					</div>
+					<!--
 					<img src="http://tools.tongleer.com/content/templates/mdx/img/bg_mobile.jpg" width="100%" height: 100%; />
+					-->
 					<div style="background-color:#00aaff;width:100%;margin:0 auto; overflow:hidden;position:fixed;bottom:0;text-align:center;font-size:20px;">
 						<h1>
 							<a href="'.$adUrl[0].'" rel="nofollow">'.$adName[0].'</a>&nbsp;

@@ -53,7 +53,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $pass = new Typecho_Widget_Helper_Form_Element_Password('pass', null, '', _t('密码：'));
         $form->addInput($pass->addRule('required', _t('密码不能为空！')));
 		
-		$token = new Typecho_Widget_Helper_Form_Element_Text('token', null, '', _t('Token：'), _t("自行到<a href='http://www.tongleer.com/reg' target='_blank'>同乐儿</a>注册账号后获取"));
+		$token = new Typecho_Widget_Helper_Form_Element_Text('token', null, '', _t('Token：'), _t("自行到<a href='https://www.tongleer.com/wp-login.php?action=register' target='_blank'>同乐儿</a>注册账号后获取"));
         $form->addInput($token->addRule('required', _t('token不能为空！')));
 		
 		$db = Typecho_Db::get();

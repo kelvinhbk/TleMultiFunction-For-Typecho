@@ -164,7 +164,7 @@ if($code!=''&&$state!=''){
 				}
 			}
 			?>
-			<script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<script src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 			<link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css">
 			<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
 			<!-- content section -->
@@ -213,10 +213,10 @@ if($code!=''&&$state!=''){
 				第二步：将以下代码放到想要添加QQ登录的地方即可。
 			</p>
 			<p>
-				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
+				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin"><img src="https://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
 			</p>
 			<p>
-				测试：<a href="?page=qqlogin"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>（备注：已登录或禁止注册时不会进行登录和注册。）
+				测试：<a href="?page=qqlogin"><img src="https://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>（备注：已登录或禁止注册时不会进行登录和注册。）
 			</p>
 			<hr />
 			<h3>第三方登录用户管理</h3>
