@@ -68,7 +68,7 @@ if($action=='shorturl'){
 						'longurl'   =>  $newlongurl[$i],
 						'shorturl'   =>  $newshortdata[$i],
 						'isred'     =>  $isred,
-						'instime'     =>  date('Y-m-d H:i:s',Typecho_Date::time())
+						'instime'     =>  date('Y-m-d H:i:s',time())
 					);
 					$insert = $db->insert('table.multi_dwz')->rows($result);
 					$insertId = $db->query($insert);

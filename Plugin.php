@@ -395,6 +395,29 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 				);
 				$insert = $db->insert('table.multi_baidusubmit')->rows($result);
 				$insertId = $db->query($insert);
+				
+				$query= $db->select()->from('table.multi_baidusubmit')->where('bscid = ?', $cid); 
+				$row = $db->fetchRow($query);
+				if(count($row)==0){
+					$result = array(
+						'bscid'   =>  $widget->cid,
+						'url'   =>  $widget->permalink,
+						'instime'     =>  date('Y-m-d H:i:s',time()),
+						'error'     =>  $error,
+						'linkstatus'=>$status
+					);
+					$insert = $db->insert('table.multi_baidusubmit')->rows($result);
+					$insertId = $db->query($insert);
+				}else{
+					$update = $db->update('table.multi_baidusubmit')->rows(array(
+						'url'   =>  $widget->permalink,
+						'instime'     =>  date('Y-m-d H:i:s',time()),
+						'error'     =>  $error,
+						'linkstatus'=>$status
+					))->where('bscid=?',$widget->cid);
+					$updateRows= $db->query($update);
+				}
+				
 				return true;
 			}
 		}

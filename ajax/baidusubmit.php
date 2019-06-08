@@ -54,7 +54,7 @@ if ($client) {
 		$result = array(
 			'bscid'   =>  $cid,
 			'url'   =>  $url,
-			'instime'     =>  date('Y-m-d H:i:s',Typecho_Date::time()),
+			'instime'     =>  date('Y-m-d H:i:s',time()),
 			'error'     =>  $error
 		);
 		$insert = $db->insert('table.multi_baidusubmit')->rows($result);
@@ -69,7 +69,7 @@ if ($client) {
 	}else{
 		$update = $db->update('table.multi_baidusubmit')->rows(array(
 			'url'   =>  $url,
-			'instime'     =>  date('Y-m-d H:i:s',Typecho_Date::time()),
+			'instime'     =>  date('Y-m-d H:i:s',time()),
 			'error'     =>  $error
 		))->where('bscid=?',$cid);
 		$updateRows= $db->query($update);
