@@ -6,11 +6,10 @@ include '../../../../config.inc.php';
 require_once "../include/SignatureHelper.php";
 use Aliyun\DySDKLite\SignatureHelper;
 
-if(@$_COOKIE["sendcodetime"]!=''){
-	echo 'toofast';
-	return;
-}
-setcookie("sendcodetime", time(), time()+10);
+$action = isset($_POST['action']) ? addslashes(trim($_POST['action'])) : '';
+$name = isset($_POST['name']) ? addslashes(trim($_POST['name'])) : '';//发送到的用户名
+$sitetitle = isset($_POST['sitetitle']) ? addslashes(trim($_POST['sitetitle'])) : '';
+$pluginsname = isset($_POST['pluginsname']) ? addslashes(trim($_POST['pluginsname'])) : '';
 
 //重置短信验证码
 $randCode = '';
@@ -18,15 +17,21 @@ $chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHIJKLMNPRSTUVWXYZ23456789';
 for ( $i = 0; $i < 5; $i++ ){
 	$randCode .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
 }
-$_SESSION['code'] = strtoupper($randCode);
-
-$name = isset($_POST['name']) ? addslashes(trim($_POST['name'])) : '';//发送到的用户名
-$sitetitle = isset($_POST['sitetitle']) ? addslashes(trim($_POST['sitetitle'])) : '';
-$pluginsname = isset($_POST['pluginsname']) ? addslashes(trim($_POST['pluginsname'])) : '';
+$_SESSION[$action.'code'] = strtoupper($randCode);
 
 $setphonelogin=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../../plugins/'.$pluginsname.'/config/setphonelogin.php'),'<?php die; ?>'));
-var_dump(sendSms($setphonelogin['accessKeyId'],$setphonelogin['accessKeySecret'],$setphonelogin['templatecode'],$setphonelogin['signname'],$name,$sitetitle,$_SESSION['code'],$setphonelogin['iscontain']));
-
+$result=sendSms($setphonelogin['accessKeyId'],$setphonelogin['accessKeySecret'],$setphonelogin['templatecode'],$setphonelogin['signname'],$name,$sitetitle,$_SESSION[$action.'code'],$setphonelogin['iscontain']);
+if($result->Code=="OK"){
+	$_SESSION['new'.$action] = $name;
+	$json=json_encode(array("error_code"=>0,"message"=>"发送验证码成功"));
+	echo $json;
+}else if($result->Code=="isv.BUSINESS_LIMIT_CONTROL"){
+	$json=json_encode(array("error_code"=>-3,"message"=>"发送验证码失败，业务限流。"));
+	echo $json;
+}else{
+	$json=json_encode(array("error_code"=>-2,"message"=>"发送验证码失败".$result->Code));
+	echo $json;
+}
 /**
  * 发送短信
  */

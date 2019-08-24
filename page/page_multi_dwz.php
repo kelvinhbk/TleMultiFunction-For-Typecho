@@ -20,11 +20,11 @@ if(!isset($plugins['activated']['TleMultiFunction'])){
 $queryTleMultiFunction= $this->db->select('value')->from('table.options')->where('name = ?', 'plugin:TleMultiFunction'); 
 $rowTleMultiFunction = $this->db->fetchRow($queryTleMultiFunction);
 $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
-if($tleMultiFunction['baidu_submit']=='n'){
-	die('未启用百度链接提交插件');
+if($tleMultiFunction['dwz']=='n'){
+	die('未启用短网址功能');
 }
 
-$setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setbaidusubmit_config.php'),'<?php die; ?>'));
+$setuser_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setuser_config.php'),'<?php die; ?>'));
 ?>
 
 <html>

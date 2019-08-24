@@ -22,12 +22,12 @@ $queryTleMultiFunction= $this->db->select('value')->from('table.options')->where
 $rowTleMultiFunction = $this->db->fetchRow($queryTleMultiFunction);
 $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
 if($tleMultiFunction['baidu_submit']=='n'){
-	die('未启用百度链接提交插件');
+	die('未启用百度链接提交功能');
 }
 
 /*
-$setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setbaidusubmit_config.php'),'<?php die; ?>'));
-$result=checkUser($setbaidusubmit_config['username'],$setbaidusubmit_config['password'],$setbaidusubmit_config['access_token']);
+$setuser_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setuser_config.php'),'<?php die; ?>'));
+$result=checkUser($setuser_config['username'],$setuser_config['password'],$setuser_config['access_token']);
 switch($result){
 	case 0:
 		die('服务器验证错误');
@@ -85,7 +85,7 @@ if(strpos($this->permalink,'?')){
 	  <div class="am-u-md-8 am-u-sm-centered">
 		<form class="am-form" action="" method="post">
 		  <fieldset class="am-form-set">
-			<input type="text" id="url" name="url" value="<?php if(@$url!=''){echo $url;}else{echo @$setbaidusubmit['url'];} ?>" placeholder="<?php _e('站点链接(不带http)'); ?>" required>
+			<input type="text" id="url" name="url" value="<?php if(@$url!=''){echo $url;}else{echo @$setbaidusubmit['url'];} ?>" placeholder="<?php _e('站点链接'); ?>" required>
 			<input type="text" id="linktoken" name="linktoken" value="<?php if(@$linktoken!=''){echo $linktoken;}else{echo @$setbaidusubmit['linktoken'];} ?>" placeholder="<?php _e('站点token'); ?>" required>
 			<input type="text" id="appid" name="appid" value="<?php if(@$appid!=''){echo $appid;}else{echo @$setbaidusubmit['appid'];} ?>" placeholder="<?php _e('熊掌号appid'); ?>">
 			<input type="text" id="resctoken" name="resctoken" type="text" value="<?php if(@$resctoken!=''){echo $resctoken;}else{echo @$setbaidusubmit['resctoken'];} ?>" placeholder="<?php _e('熊掌号token'); ?>">

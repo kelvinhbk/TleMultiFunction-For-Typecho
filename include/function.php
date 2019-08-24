@@ -1,4 +1,34 @@
 <?php
+function showOAuthAvatar($options,$oauthtype){
+	switch($oauthtype){
+		case "qq":
+			return $options->pluginUrl."/TleMultiFunction/assets/images/qq.png";
+			break;
+		case "weibo":
+			return $options->pluginUrl."/TleMultiFunction/assets/images/weibo.png";
+			break;
+		case "weixin":
+			return $options->pluginUrl."/TleMultiFunction/assets/images/weixin.png";
+			break;
+	}
+}
+function isProtocol(){
+    if (isHttps()) {
+        return "https://";
+    } else {
+        return "https://";
+    }
+}
+function isHttps(){
+    if (!empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off') {
+        return true;
+    } elseif (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        return true;
+    } elseif (!empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
+        return true;
+    }
+    return false;
+}
 function getQQUserInfo($access_token,$oauth_consumer_key,$openid){
 	$data=array(
 		"access_token"=>$access_token,

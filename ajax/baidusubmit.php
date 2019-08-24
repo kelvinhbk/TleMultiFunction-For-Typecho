@@ -10,8 +10,9 @@ $url = isset($_POST['url']) ? addslashes(trim($_POST['url'])) : '';
 $cid = isset($_POST['cid']) ? addslashes(trim($_POST['cid'])) : '';
 $setbaidusubmit=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../../plugins/'.$pluginsname.'/config/setbaidusubmit.php'),'<?php die; ?>'));
 
-$setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../config/setbaidusubmit_config.php'),'<?php die; ?>'));
-$res=checkUser($setbaidusubmit_config['username'],$setbaidusubmit_config['password'],$setbaidusubmit_config['access_token']);
+/*
+$setuser_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../config/setuser_config.php'),'<?php die; ?>'));
+$res=checkUser($setuser_config['username'],$setuser_config['password'],$setuser_config['access_token']);
 switch($res){
 	case 0:
 		echo('服务器验证错误');return;
@@ -24,6 +25,7 @@ switch($res){
 	case 104:
 		echo('token已过期');return;
 }
+*/
 
 $urls=array($url);
 if($action=='baidusubmit'){

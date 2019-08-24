@@ -1,0 +1,1 @@
+<?php die; ?>a:4:{s:3:"url";s:24:"https://www.tongleer.com";s:9:"linktoken";s:16:"X9HIB5p5P5cndlrl";s:5:"appid";s:16:"1599044323115000";s:9:"resctoken";s:16:"6gX5XsGhs4MsLhje";}

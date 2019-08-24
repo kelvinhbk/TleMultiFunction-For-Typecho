@@ -20,8 +20,8 @@ if(!isset($plugins['activated']['TleMultiFunction'])){
 $queryTleMultiFunction= $this->db->select('value')->from('table.options')->where('name = ?', 'plugin:TleMultiFunction'); 
 $rowTleMultiFunction = $this->db->fetchRow($queryTleMultiFunction);
 $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
-if($tleMultiFunction['baidu_submit']=='n'){
-	die('未启用百度链接提交插件');
+if($tleMultiFunction['oauthlogin']=='n'){
+	die('未启用第三方登陆功能');
 }
 $setoauth=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setoauth.php'),'<?php die; ?>'));
 
@@ -35,9 +35,10 @@ if(strpos($this->permalink,'?')){
 $code = isset($_GET['code']) ? addslashes(trim($_GET['code'])) : '';
 $state = isset($_GET['state']) ? addslashes(trim($_GET['state'])) : '';
 if($code!=''&&$state!=''){
+	$state=explode("|",$state);
 	$db = Typecho_Db::get();
 	
-	if(!$state || $state != $setoauth['qqstate']){
+	if(!$state || $state[0] != $setoauth['qqstate']){
 		die('30001');
 	}
 	$tokenData=getQQAccessToken($setoauth['qq_appid'],$setoauth['qq_appkey'],$setoauth['qq_callback'],$_GET['code']);
@@ -50,14 +51,14 @@ if($code!=''&&$state!=''){
 	$figureurl=$userinfo['figureurl_qq_2'];
 	$oauthQuery= $this->db->select()->from('table.multi_oauthlogin')->where('oauthid = ?', $oauthid);
 	$oauthUser = $db->fetchRow($oauthQuery);
-	$query= $this->db->select()->from('table.users')->where('uid = ?', $oauthUser['oauthuid']);
-	$user = $db->fetchRow($query);
 	if($oauthUser){
 		/*登录*/
+		$query= $this->db->select()->from('table.users')->where('uid = ?', $oauthUser['oauthuid']);
+		$user = $db->fetchRow($query);
 		/** 如果已经登录 */
 		if ($this->user->hasLogin()) {
 			/** 直接返回 */
-			$this->response->redirect($this->options->index);
+			$this->response->redirect($state[1]);
 		}
 		
 		$authCode = function_exists('openssl_random_pseudo_bytes') ?
@@ -78,7 +79,7 @@ if($code!=''&&$state!=''){
 		$this->push($user);
 		$this->_user = $user;
 		$this->_hasLogin = true;
-		$this->pluginHandle()->loginSucceed($this, $name, '', false);
+		$this->pluginHandle()->loginSucceed($this, $user["name"], '', false);
 		
 		$this->widget('Widget_Notice')->set(_t('用户已存在，已为您登录 '), 'success');
 		/*跳转验证后地址*/
@@ -88,22 +89,37 @@ if($code!=''&&$state!=''){
 			/*不允许普通用户直接跳转后台*/
 			$this->response->redirect($this->options->profileUrl);
 		} else {
-			$this->response->redirect($this->options->adminUrl);
+			$this->response->redirect($state[1]);
 		}
 	}else{
 		/*注册*/
 		/** 如果已经登录 */
 		if ($this->user->hasLogin() || !$this->options->allowRegister) {
 			/** 直接返回 */
-			$this->response->redirect($this->options->index);
+			$this->response->redirect($state[1]);
 		}
 		$hasher = new PasswordHash(8, true);
 		$generatedPassword = Typecho_Common::randString(7);
 
+		$newname=$name;
+		$queryUser = $this->db->select()->from('table.users')->where('name = ?', $name); 
+		$rowUser = $this->db->fetchRow($queryUser);
+		if($rowUser){
+			for($i=1;;$i++){
+				$newname=$name.$i;
+				$queryUser = $this->db->select()->from('table.users')->where('name = ?', $newname); 
+				$rowUser = $this->db->fetchRow($queryUser);
+				if($rowUser){
+					continue;
+				}else{
+					break;
+				}
+			}
+		}
 		$dataStruct = array(
-			'name'      =>  $name."-".time(),
-			'mail'      =>  $name."-".time().'@tongleer.com',
-			'screenName'=>  $name."-".time(),
+			'name'      =>  $newname,
+			'mail'      =>  $newname.'@example.com',
+			'screenName'=>  $newname,
 			'password'  =>  $hasher->HashPassword($generatedPassword),
 			'created'   =>  time(),
 			'group'     =>  'subscriber'
@@ -115,7 +131,7 @@ if($code!=''&&$state!=''){
 		$dataOAuth = array(
 			'oauthid'      =>  $oauthid,
 			'oauthuid'      =>  $userId,
-			'oauthnickname'=>  $name,
+			'oauthnickname'=>  $newname,
 			'oauthfigureurl'  =>  $figureurl,
 			'oauthgender'   =>  $gender,
 			'oauthtype'     =>  'qq'
@@ -126,12 +142,12 @@ if($code!=''&&$state!=''){
 
 		$this->pluginHandle()->finishRegister($this);
 
-		$this->user->login($name, $generatedPassword);
+		$this->user->login($newname, $generatedPassword);
 
 		Typecho_Cookie::delete('__typecho_first_run');
 		
 		$this->widget('Widget_Notice')->set(_t('用户 <strong>%s</strong> 已经成功注册, 密码为 <strong>%s</strong>', $this->screenName, $generatedPassword), 'success');
-		$this->response->redirect($this->options->adminUrl);
+		$this->response->redirect($state[1]);
 	}
 }else{
 	$page = isset($_GET['page']) ? addslashes(trim($_GET['page'])) : '';
@@ -148,7 +164,7 @@ if($code!=''&&$state!=''){
 			if($id!=0){
 				$delete = $this->db->delete('table.multi_oauthlogin')->where('oauthuid = ?', $id);
 				$deletedRows = $this->db->query($delete);
-				echo "<script>".$this->permalink."</script>";exit;
+				echo "<script>location.href='".$this->permalink."';</script>";exit;
 			}
 			$action = isset($_POST['action']) ? addslashes(trim($_POST['action'])) : '';
 			if($action=='setoauthlogin'){
@@ -164,7 +180,7 @@ if($code!=''&&$state!=''){
 				}
 			}
 			?>
-			<script src="https://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+			<script src="http://apps.bdimg.com/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
 			<link rel="stylesheet" href="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/css/mdui.min.css">
 			<script src="//cdnjs.loli.net/ajax/libs/mdui/0.4.2/js/mdui.min.js"></script>
 			<!-- content section -->
@@ -187,6 +203,7 @@ if($code!=''&&$state!=''){
 						<div class="mdui-textfield mdui-textfield-floating-label">
 						  <label class="mdui-textfield-label"><?php _e('QQ互联callback回调'); ?></label>
 						  <input class="mdui-textfield-input" id="qq_callback" name="qq_callback" type="text" required value="<?=$this->permalink;?>" readOnly />
+						  <small>回调地址，复制到QQ互联应用信息中即可，无需更改。备注：若在已有用户的情况下，修改appid和appkey，会由于openid不同导致重复注册用户。</small>
 						  <div class="mdui-textfield-error">QQ互联callback回调不能为空</div>
 						</div>
 						<div class="mdui-row-xs-1">
@@ -211,12 +228,15 @@ if($code!=''&&$state!=''){
 			</script>
 			<p>
 				第二步：将以下代码放到想要添加QQ登录的地方即可。
+				<?php
+				$protocolurl=isProtocol().$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
+				?>
 			</p>
 			<p>
-				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin"><img src="https://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
+				<textarea rows="2" cols="100"><a href="<?=$this->permalink;?>?page=qqlogin&protocolurl=<?=$protocolurl;?>"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a></textarea>
 			</p>
 			<p>
-				测试：<a href="?page=qqlogin"><img src="https://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>（备注：已登录或禁止注册时不会进行登录和注册。）
+				测试：<a href="?page=qqlogin&protocolurl=<?=$protocolurl;?>"><img src="http://me.tongleer.com/mob/resource/images/qq_login_blue.png" /></a>（备注：已登录或禁止注册时不会进行登录和注册。）
 			</p>
 			<hr />
 			<h3>第三方登录用户管理</h3>
@@ -313,7 +333,8 @@ if($code!=''&&$state!=''){
 			'qq_callback'=>$setoauth['qq_callback'],
 			'qqstate'=>$qqstate
 		)));
-		$login_url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id='.$setoauth['qq_appid'].'&redirect_uri='.urlencode($setoauth['qq_callback']).'&state='.$qqstate;
+		$protocolurl = isset($_GET['protocolurl']) ? addslashes(trim($_GET['protocolurl'])) : '';
+		$login_url = 'https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id='.$setoauth['qq_appid'].'&redirect_uri='.urlencode($setoauth['qq_callback']).'&state='.$qqstate."|".$protocolurl;
 		header("Location:$login_url");
 	}
 }

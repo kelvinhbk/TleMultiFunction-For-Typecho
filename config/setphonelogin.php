@@ -1,0 +1,1 @@
+<?php die; ?>a:6:{s:11:"accessKeyId";s:16:"LTAIUmmctHVHOspN";s:15:"accessKeySecret";s:30:"YkdYlPoYpmrsl824n0UFdUXcrjb1N7";s:7:"isindex";s:1:"y";s:9:"iscontain";s:1:"n";s:12:"templatecode";s:13:"SMS_142145488";s:8:"signname";s:12:"注册验证";}

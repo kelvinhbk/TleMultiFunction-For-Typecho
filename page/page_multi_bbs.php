@@ -21,8 +21,8 @@ if(!isset($plugins['activated']['TleMultiFunction'])){
 $queryTleMultiFunction= $this->db->select('value')->from('table.options')->where('name = ?', 'plugin:TleMultiFunction'); 
 $rowTleMultiFunction = $this->db->fetchRow($queryTleMultiFunction);
 $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
-if($tleMultiFunction['baidu_submit']=='n'){
-	die('未启用百度链接提交插件');
+if($tleMultiFunction['bbs']=='n'){
+	die('未启用论坛功能');
 }
 ?>
 <!DOCTYPE html>

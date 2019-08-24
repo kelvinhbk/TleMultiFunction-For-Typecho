@@ -22,7 +22,7 @@ $queryTleMultiFunction= $this->db->select('value')->from('table.options')->where
 $rowTleMultiFunction = $this->db->fetchRow($queryTleMultiFunction);
 $tleMultiFunction=@unserialize($rowTleMultiFunction['value']);
 if($tleMultiFunction['phonelogin']=='n'){
-	die('未启用手机号登录插件');
+	die('未启用手机号登录功能');
 }
 $setphonelogin=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../../plugins/'.$pluginsname.'/config/setphonelogin.php'),'<?php die; ?>'));
 ?>
@@ -115,8 +115,12 @@ if ($this->user->hasLogin()) {
 		$name = isset($_POST['name']) ? addslashes(trim($_POST['name'])) : '';
 		$code = isset($_POST['code']) ? addslashes(trim($_POST['code'])) : '';
 		if($name&&$code){
-			$sessionCode = isset($_SESSION['code']) ? $_SESSION['code'] : '';
+			$sessionCode = isset($_SESSION['phonecode']) ? $_SESSION['phonecode'] : '';
 			if(strcasecmp($code,$sessionCode)==0){
+				if (isset($_SESSION["newphone"])&&$name!=$_SESSION["newphone"]) {
+					echo'<script>alert("填写手机号和发送验证码的手机号不一致！");location.href="";</script>';
+					exit;
+				}
 				$query= $db->select('uid')->from('table.users')->where('name = ?', $name); 
 				$user = $db->fetchRow($query);
 				if($user){
@@ -175,7 +179,8 @@ if ($this->user->hasLogin()) {
 						'screenName'=>  $name,
 						'password'  =>  $hasher->HashPassword($generatedPassword),
 						'created'   =>  time(),
-						'group'     =>  'subscriber'
+						'group'     =>  'subscriber',
+						'phone'     =>  $name
 					);
 					
 					$insert = $db->insert('table.users')->rows($dataStruct);
@@ -239,12 +244,12 @@ if ($this->user->hasLogin()) {
 				alert('请输入有效的手机号码！'); 
 				return false; 
 			}
-			settime();
-			$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/sendsms.php",{name:name,sitetitle:$('#sitetitle').val(),pluginsname:$('#pluginsname').val()},function(data){
-				if(data=='toofast'){
-					alert('发送频率太快了~');
-					clearTimeout(timer);
+			$.post("<?php $this->options->siteUrl(); ?>usr/plugins/<?=$pluginsname;?>/ajax/sendsms.php",{action:"phone",name:name,sitetitle:$('#sitetitle').val(),pluginsname:$('#pluginsname').val()},function(data){
+				var data=JSON.parse(data);
+				if(data.error_code==0){
 					settime();
+				}else{
+					alert(data.message);
 				}
 			});
 		});
@@ -266,12 +271,14 @@ if ($this->user->hasLogin()) {
 		var countdown=60;
 		function settime() {
 			if (countdown == 0) {
-				$("#sendsmsmsg").html("刷新页面重新发送");
+				$("#sendsmsmsg").html("发送");
+				$("#sendsmsmsg").attr('disabled',false);
 				countdown = 60;
 				clearTimeout(timer);
 				return;
 			} else {
 				$("#sendsmsmsg").html(countdown+"秒");
+				$("#sendsmsmsg").attr('disabled',true);
 				$("#sendsmsmsg").unbind("click");
 				countdown--; 
 			} 

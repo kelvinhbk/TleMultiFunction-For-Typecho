@@ -15,16 +15,16 @@ if($action=='shorturl'){
 	$customdwz = isset($_POST['customdwz']) ? addslashes($_POST['customdwz']) : '';
 	$type = isset($_POST['type']) ? addslashes($_POST['type']) : '';
 	$domain = isset($_POST['domain']) ? addslashes($_POST['domain']) : '';
-	$setbaidusubmit_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../config/setbaidusubmit_config.php'),'<?php die; ?>'));
+	$setuser_config=@unserialize(ltrim(file_get_contents(dirname(__FILE__).'/../config/setuser_config.php'),'<?php die; ?>'));
 	$data=array(
 		"urls"=>$longurls,
 		"isred"=>$isred,
 		"custom"=>$customdwz,
 		"types"=>$type,
 		"domain"=>$domain,
-		"user"=>$setbaidusubmit_config['username'],
-		"pass"=>$setbaidusubmit_config['password'],
-		"token"=>$setbaidusubmit_config['access_token']
+		"user"=>$setuser_config['username'],
+		"pass"=>$setuser_config['password'],
+		"token"=>$setuser_config['access_token']
     );
 	$client = Typecho_Http_Client::get();
 	if ($client) {
