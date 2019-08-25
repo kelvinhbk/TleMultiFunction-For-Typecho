@@ -857,7 +857,7 @@ a;
                 $ja.=<<<a
 <script>
 	var mailInput=document.getElementById('mail');
-	var codeInputs='<p><label for="smscode" class="sr-only">验证码</label><input type="text" id="smscode" name="smscode" placeholder="短信验证码(必填)" value="" class="text-l w-50" /><button id="sendsmscode" class="btn btn-l w-50">发送验证码</button></p><p><label for="nickname" class="sr-only">昵称</label><input type="text" id="nickname" name="nickname" placeholder="昵称(选填)" value="" class="text-l w-100" /></p><p><label for="weburl" class="sr-only">个人主页</label><input type="text" id="weburl" name="weburl" placeholder="个人主页(选填,http://开头)" value="" class="text-l w-100" /></p>';
+	var codeInputs='<p><label for="smscode" class="sr-only">验证码</label><input type="text" id="smscode" name="smscode" placeholder="验证码(必填)" value="" class="text-l w-50" /><button id="sendsmscode" class="btn btn-l w-50">发送验证码</button></p><p><label for="nickname" class="sr-only">昵称</label><input type="text" id="nickname" name="nickname" placeholder="昵称(选填)" value="" class="text-l w-100" /></p><p><label for="weburl" class="sr-only">个人主页</label><input type="text" id="weburl" name="weburl" placeholder="个人主页(选填,http://开头)" value="" class="text-l w-100" /></p>';
 	var pInput = document.createElement("p");
 	pInput.id = "codeInput";
 	mailInput.parentNode.appendChild(pInput);
