@@ -1,6 +1,6 @@
 <?php
 /**
- * Typecho多功能插件集成多项功能：百度(熊掌号)链接提交、手机登陆、邮箱登陆、QQ登陆、微博登陆、忘记密码、网址缩短、论坛、多平台用户管理等。<div class="wecenterset"><br /><a href="javascript:;" title="插件因兴趣于闲暇时间所写，故会有代码不规范、不专业和bug的情况，但完美主义促使代码还说得过去，如有bug或使用问题进行反馈即可。">鼠标轻触查看备注</a>&nbsp;<a href="http://club.tongleer.com" target="_blank">论坛</a>&nbsp;<a href="https://www.tongleer.com/api/web/pay.png" target="_blank">打赏</a>&nbsp;<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=diamond0422@qq.com" target="_blank">反馈</a></div><style>.wecenterset a{background: #4DABFF;padding: 5px;color: #fff;}</style>
+ * Typecho多功能插件集成多项功能：百度(熊掌号)链接提交、手机登陆、邮箱登陆、QQ登陆、微博登陆、geetest验证码、忘记密码、网址缩短、论坛、多平台用户管理等。<div class="wecenterset"><br /><a href="javascript:;" title="插件因兴趣于闲暇时间所写，故会有代码不规范、不专业和bug的情况，但完美主义促使代码还说得过去，如有bug或使用问题进行反馈即可。">鼠标轻触查看备注</a>&nbsp;<a href="http://club.tongleer.com" target="_blank">论坛</a>&nbsp;<a href="https://www.tongleer.com/api/web/pay.png" target="_blank">打赏</a>&nbsp;<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=diamond0422@qq.com" target="_blank">反馈</a></div><style>.wecenterset a{background: #4DABFF;padding: 5px;color: #fff;}</style>
  * @package TleMultiFunction For Typecho
  * @author 二呆
  * @version 1.0.17<br /><span id="wecenterupdateinfo"></span><script>xmlHttp=new XMLHttpRequest();xmlHttp.open("GET","https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=17",true);xmlHttp.send(null);xmlHttp.onreadystatechange=function () {if (xmlHttp.readyState ==4 && xmlHttp.status ==200){document.getElementById("wecenterupdateinfo").innerHTML=xmlHttp.responseText;}}</script>
@@ -741,6 +741,11 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		}
         return $dataStruct;
     }
+	/**
+     * 注册表单
+     * @access public
+     * @return void
+     */
     public static function addRegInput(){
         $options = Typecho_Widget::widget('Widget_Options');
 		$plug_url = $options->pluginUrl;
@@ -752,9 +757,68 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		if(!in_array('TleMultiFunction', $activates)){
 			return;
 		}
+		$ja=<<<a
+<script>
+	$.getScript("$plug_url/TleMultiFunction/assets/js/gt.js");
+</script>
+a;
 		if(preg_match("/{$login}/",$url)){
 			$forgot=Typecho_Common::url('passport/forgot', $options->index);
-			$ja=<<<a
+			if((isset($get["enablePhonelogin"])&&$get["enablePhonelogin"]=="y")||(isset($get["enableMaillogin"])&&$get["enableMaillogin"]=="y")){
+				$nameinput="";
+				if(isset($get["enablePhonelogin"])&&$get["enablePhonelogin"]=="y"){
+					$nameinput.="/手机号";
+				}
+				if(isset($get["enableMaillogin"])&&$get["enableMaillogin"]=="y"){
+					$nameinput.="/邮箱";
+				}
+				$ja.=<<<a
+<script>
+	$("#name").attr("placeholder","用户名$nameinput");
+</script>
+a;
+			}
+			$geetestSet=unserialize(@$get["enableGeetest"]);
+			if($geetestSet&&in_array("login",$geetestSet)){
+				$ja.=<<<a
+<script>
+	var pwdInput=document.getElementById('password');
+	var codeInputs='<div id="embed-captcha"></div>';
+	var pInput = document.createElement("p");
+	pInput.id = "gtInput";
+	pwdInput.parentNode.appendChild(pInput);
+	document.getElementById('gtInput').innerHTML=codeInputs;
+	
+	var handlerEmbed = function (captchaObj) {
+        captchaObj.appendTo("#embed-captcha");
+		$("form[name='login']").submit(function(){
+			var validate = captchaObj.getValidate();
+			if (!validate) {
+				alert("请先完成验证");
+				return false;
+			}
+			return true;
+		});
+    };
+	$.ajax({
+		url: "$plug_url/TleMultiFunction/ajax/geetest.php?action=init&t=" + (new Date()).getTime(),/*加随机数防止缓存*/
+		type: "get",
+		dataType: "json",
+		success: function (data) {
+			console.log(data);
+			initGeetest({
+				gt: data.gt,
+				challenge: data.challenge,
+				new_captcha: data.new_captcha,
+				product: "embed", /*产品形式，包括：float，embed，popup。注意只对PC版验证码有效*/
+				offline: !data.success
+			}, handlerEmbed);
+		}
+	});
+</script>
+a;
+			}
+			$ja.=<<<a
 <script>
 	$(".more-link").append('&bull;<a href="$forgot">忘记密码</a>');
 </script>
@@ -790,7 +854,7 @@ a;
 				if(isset($get["enableMaillogin"])&&$get["enableMaillogin"]=="y"){
 					$nameinput.="/邮箱";
 				}
-                $ja=<<<a
+                $ja.=<<<a
 <script>
 	var mailInput=document.getElementById('mail');
 	var codeInputs='<p><label for="smscode" class="sr-only">验证码</label><input type="text" id="smscode" name="smscode" placeholder="短信验证码(必填)" value="" class="text-l w-50" /><button id="sendsmscode" class="btn btn-l w-50">发送验证码</button></p><p><label for="nickname" class="sr-only">昵称</label><input type="text" id="nickname" name="nickname" placeholder="昵称(选填)" value="" class="text-l w-100" /></p><p><label for="weburl" class="sr-only">个人主页</label><input type="text" id="weburl" name="weburl" placeholder="个人主页(选填,http://开头)" value="" class="text-l w-100" /></p>';
@@ -846,6 +910,41 @@ a;
 	});
 </script>
 a;
+				$geetestSet=unserialize(@$get["enableGeetest"]);
+				if($geetestSet&&in_array("reg",$geetestSet)){
+					$ja.=<<<a
+<script>
+	$(".submit").prepend('<p><div id="embed-captcha"></div></p>');
+	
+	var handlerEmbed = function (captchaObj) {
+        captchaObj.appendTo("#embed-captcha");
+		$("form[name='register']").submit(function(){
+			var validate = captchaObj.getValidate();
+			if (!validate) {
+				alert("请先完成验证");
+				return false;
+			}
+			return true;
+		});
+    };
+	$.ajax({
+		url: "$plug_url/TleMultiFunction/ajax/geetest.php?action=init&t=" + (new Date()).getTime(),/*加随机数防止缓存*/
+		type: "get",
+		dataType: "json",
+		success: function (data) {
+			console.log(data);
+			initGeetest({
+				gt: data.gt,
+				challenge: data.challenge,
+				new_captcha: data.new_captcha,
+				product: "embed", /*产品形式，包括：float，embed，popup。注意只对PC版验证码有效*/
+				offline: !data.success
+			}, handlerEmbed);
+		}
+	});
+</script>
+a;
+				}
 				echo $ja;
             }
         }

@@ -62,7 +62,7 @@ class TleMultiFunction_Widget extends Typecho_Widget{
      */
     public function doForgot()
     {
-        require_once 'theme/forgot.php';
+        require_once 'page/forgot.php';
 
         if ($this->request->isPost()) {
             /* 验证表单 */
@@ -87,7 +87,7 @@ class TleMultiFunction_Widget extends Typecho_Widget{
             $url = Typecho_Common::url('/passport/reset?token=' . $token, $this->options->index);
 
             /* 发送重置密码地址 */
-            require_once 'PHPMailer/PHPMailerAutoload.php';
+            require_once 'include/PHPMailer/PHPMailerAutoload.php';
 
             $phpMailer = new PHPMailer();
 			
@@ -153,7 +153,7 @@ class TleMultiFunction_Widget extends Typecho_Widget{
             $this->response->redirect($this->options->loginUrl);
         }
 
-        require_once 'theme/reset.php';
+        require_once 'page/reset.php';
 
         /* 重置密码 */
         if ($this->request->isPost()) {

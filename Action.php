@@ -38,6 +38,7 @@ class TleMultiFunction_Action extends Typecho_Widget implements Widget_Interface
 		$this->on($this->request->is('do=oAuthCallback'))->oAuthCallback();
 		$this->on($this->request->is('do=forget'))->forget();
 		$this->on($this->request->is('do=delUser'))->delUser();
+		$this->on($this->request->is('do=verifyCode'))->verifyCode();
     }
 
     /**
@@ -492,6 +493,41 @@ class TleMultiFunction_Action extends Typecho_Widget implements Widget_Interface
 		$result = true;
 		/** 提示信息 */
 		$this->widget('Widget_Notice')->set(true === $result ? _t('删除成功') : _t('删除失败'), true === $result ? 'success' : 'notice');
+		
+        /** 转向原页 */
+        $this->response->goBack();
+    }
+	/**
+     * 验证码方法
+     */
+    public function verifyCode(){
+        if (Typecho_Widget::widget('TleMultiFunction_Console')->verifyCodeForm()->validate()) {
+            $this->response->goBack();
+        }
+
+        $this->init();
+		
+		$form_data = $this->request->from('GT_CAPTCHA_ID','GT_PRIVATE_KEY');
+		$enableGeetest = isset($_POST['enableGeetest']) ? $_POST['enableGeetest'] : array();
+		
+		$GT_CAPTCHA_ID=$form_data["GT_CAPTCHA_ID"];
+		$GT_PRIVATE_KEY=$form_data["GT_PRIVATE_KEY"];
+		if(get_magic_quotes_gpc()){
+			$GT_CAPTCHA_ID=stripslashes($form_data["GT_CAPTCHA_ID"]);
+			$GT_PRIVATE_KEY=stripslashes($form_data["GT_PRIVATE_KEY"]);
+		}
+		
+		$get=TleMultiFunction_Plugin::getOptions();
+		
+		$get["enableGeetest"]=serialize($enableGeetest);
+		$get["GT_CAPTCHA_ID"]=$GT_CAPTCHA_ID;
+		$get["GT_PRIVATE_KEY"]=$GT_PRIVATE_KEY;
+		
+		TleMultiFunction_Plugin::saveOptions($get);
+        
+		$result = true;
+		/** 提示信息 */
+		$this->widget('Widget_Notice')->set(true === $result ? _t('保存成功') : _t('保存失败'), true === $result ? 'success' : 'notice');
 		
         /** 转向原页 */
         $this->response->goBack();

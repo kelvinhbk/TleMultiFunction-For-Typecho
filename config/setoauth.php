@@ -1,1 +1,0 @@
-<?php die; ?>a:4:{s:8:"qq_appid";s:9:"101775180";s:9:"qq_appkey";s:32:"e8e50cd39205b9960454ef6b1821b265";s:11:"qq_callback";s:51:"http://192.168.11.236/demo/te/multi_oauthlogin.html";s:7:"qqstate";s:32:"419f5908d359c438e8716070f10fc0a0";}

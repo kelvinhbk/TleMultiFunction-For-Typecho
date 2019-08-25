@@ -1,6 +1,19 @@
 <?php if (!defined('__TYPECHO_ROOT_DIR__')) exit; ?>
 <?php
-include 'common.php';
+if (!defined('__DIR__')) {
+    define('__DIR__', dirname(__FILE__));
+}
+
+define('__TYPECHO_ADMIN__', true);
+define('__ADMIN_DIR__', __TYPECHO_ROOT_DIR__ . __TYPECHO_ADMIN_DIR__);
+
+/** 初始化组件 */
+Typecho_Widget::widget('Widget_Init');
+Typecho_Widget::widget('Widget_Options')->to($options);
+Typecho_Widget::widget('Widget_Security')->to($security);
+Typecho_Widget::widget('Widget_Menu')->to($menu);
+
+list($prefixVersion, $suffixVersion) = explode('/', $options->version);
 
 $menu->title = _t('找回密码');
 
@@ -8,6 +21,7 @@ include __ADMIN_DIR__ . '/header.php';
 
 $options = Typecho_Widget::widget('Widget_Options');
 $plug_url = $options->pluginUrl;
+$get=TleMultiFunction_Plugin::getOptions();
 ?>
 <style>
     body {
@@ -65,6 +79,16 @@ $plug_url = $options->pluginUrl;
 					</li>
 				</ul>
 				<ul class="typecho-option typecho-option-submit" id="typecho-option-item-submit">
+					<?php
+					$geetestSet=unserialize(@$get["enableGeetest"]);
+					if($geetestSet&&in_array("forgot",$geetestSet)){
+					?>
+					<li>
+						<div id="embed-captcha"></div>
+					</li>
+					<?php
+					}
+					?>
 					<li>
 						<button id="findpwdbyphone" type="submit" class="btn primary">通过手机找回</button>
 					</li>
@@ -77,6 +101,7 @@ $plug_url = $options->pluginUrl;
 include __ADMIN_DIR__ . '/common-js.php';
 ?>
 <script>
+$.getScript("<?=$plug_url;?>/TleMultiFunction/assets/js/gt.js");
 /*限制键盘只能按数字键、小键盘数字键、退格键*/
 $("#smscode").keyup(function(){
 	$("#smscode").val($("#smscode").val().replace(/[^\d.]/g,""));
@@ -116,20 +141,43 @@ function settime() {
 		settime();
 	},1000) 
 }
-/*通过密码找回*/
-$("#findpwdbyphone").click(function(){
-	var phone=$("#phone").val();
-	var smscode=$("#smscode").val();
-	var indexUrl="<?=$options->index;?>";
-	$.post("<?=$plug_url;?>/TleMultiFunction/ajax/sendsms_new.php",{submit:"phone",action:"phone",name:phone,smscode:smscode,indexUrl:indexUrl},function(data){
-		var data=JSON.parse(data);
-		if(data.error_code==0){
-			location.href=data.url;
-		}else{
-			alert(data.message);
+/*通过手机找回(geetest验证)*/
+var handlerEmbed = function (captchaObj) {
+	captchaObj.appendTo("#embed-captcha");
+	$("#findpwdbyphone").click(function(){
+		var validate = captchaObj.getValidate();
+		if (!validate) {
+			alert("请先完成验证");
+			return false;
 		}
+		var phone=$("#phone").val();
+		var smscode=$("#smscode").val();
+		var indexUrl="<?=$options->index;?>";
+		$.post("<?=$plug_url;?>/TleMultiFunction/ajax/sendsms_new.php",{submit:"phone",action:"phone",name:phone,smscode:smscode,indexUrl:indexUrl},function(data){
+			var data=JSON.parse(data);
+			if(data.error_code==0){
+				location.href=data.url;
+			}else{
+				alert(data.message);
+			}
+		});
 	});
-	return false;
+};
+$.ajax({
+	url: "<?=$plug_url;?>/TleMultiFunction/ajax/geetest.php?action=init&t=" + (new Date()).getTime(),/*加随机数防止缓存*/
+	type: "get",
+	dataType: "json",
+	success: function (data) {
+		console.log(data);
+		initGeetest({
+			gt: data.gt,
+			challenge: data.challenge,
+			new_captcha: data.new_captcha,
+			product: "embed", /*产品形式，包括：float，embed，popup。注意只对PC版验证码有效*/
+			width:$("#findpwdbyphone").parent().width()+"px",
+			offline: !data.success
+		}, handlerEmbed);
+	}
 });
 </script>
 <?php

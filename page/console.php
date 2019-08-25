@@ -20,6 +20,7 @@ $db = Typecho_Db::get();
                     <li <?=($current == 'index' ? ' class="current"' : '')?>><a href="<?php $options->adminUrl('extending.php?panel=' . TleMultiFunction_Plugin::$panel); ?>"><?php _e('手机登录'); ?></a></li>
 					<li <?=($current == 'mail' ? ' class="current"' : '')?>><a href="<?php $options->adminUrl('extending.php?panel=' . TleMultiFunction_Plugin::$panel . '&type=mail'); ?>"><?php _e('邮箱登录'); ?></a></li>
                     <li <?=($current == 'social' ? ' class="current"' : '')?>><a href="<?php $options->adminUrl('extending.php?panel=' . TleMultiFunction_Plugin::$panel . '&type=social'); ?>"><?php _e('社交登录'); ?></a></li>
+					<li <?=($current == 'verifycode' ? ' class="current"' : '')?>><a href="<?php $options->adminUrl('extending.php?panel=' . TleMultiFunction_Plugin::$panel . '&type=verifycode'); ?>"><?php _e('验证码'); ?></a></li>
 					<li <?=($current == 'userlist' ? ' class="current"' : '')?>><a href="<?php $options->adminUrl('extending.php?panel=' . TleMultiFunction_Plugin::$panel . '&type=userlist'); ?>"><?php _e('用户列表'); ?></a></li>
                     <li><a href="<?php $options->adminUrl('options-plugin.php?config=TleMultiFunction') ?>"><?php _e('旧插件设置'); ?></a></li>
                 </ul>
@@ -47,6 +48,14 @@ $db = Typecho_Db::get();
 				<div class="typecho-edit-theme">
                     <div class="col-mb-12 col-tb-8 col-9 content">
                         <?php Typecho_Widget::widget('TleMultiFunction_Console')->oAuthLoginForm()->render(); ?>
+                    </div>
+                </div>
+			<?php
+				}else if($current == 'verifycode'){
+				?>
+				<div class="typecho-edit-theme">
+                    <div class="col-mb-12 col-tb-8 col-9 content">
+                        <?php Typecho_Widget::widget('TleMultiFunction_Console')->verifyCodeForm()->render(); ?>
                     </div>
                 </div>
 			<?php

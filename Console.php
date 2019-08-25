@@ -184,4 +184,53 @@ class TleMultiFunction_Console extends Typecho_Widget
 
         return $form;
     }
+	/**
+     * 验证码
+     * @return Typecho_Widget_Helper_Form
+     */
+    public function verifyCodeForm(){
+		$db= Typecho_Db::get();
+		$prefix = $db->getPrefix();
+        /** 构建表单 */
+        $options = Typecho_Widget::widget('Widget_Options');
+        $form = new Typecho_Widget_Helper_Form(Typecho_Common::url('/action/' . TleMultiFunction_Plugin::$action, $options->index),Typecho_Widget_Helper_Form::POST_METHOD);
+			
+		$form_data=TleMultiFunction_Plugin::getOptions();
+
+        /** 生成数量 */
+		$geetestSet=unserialize(@$form_data["enableGeetest"]);
+		$geetestVal=array();
+		if($geetestSet&&in_array("login",$geetestSet)){array_push($geetestVal,"login");}
+		if($geetestSet&&in_array("reg",$geetestSet)){array_push($geetestVal,"reg");}
+		if($geetestSet&&in_array("forgot",$geetestSet)){array_push($geetestVal,"forgot");}
+		$enableGeetest = new Typecho_Widget_Helper_Form_Element_Checkbox('enableGeetest',
+		array(
+			'login' => _t('登陆验证'),
+			'reg' => _t('注册验证'),
+			'forgot' => _t('忘记密码验证')
+		),$geetestVal, _t('GeeTest验证码开关（<a href="https://www.geetest.com/" target="_blank">GeeTest极验官网</a>）')
+		);
+		$form->addInput($enableGeetest->multiMode());
+		
+		$GT_CAPTCHA_ID = new Typecho_Widget_Helper_Form_Element_Text('GT_CAPTCHA_ID', array("value"), @$form_data["GT_CAPTCHA_ID"], _t('geetestID'));
+        $form->addInput($GT_CAPTCHA_ID);
+		
+		$GT_PRIVATE_KEY = new Typecho_Widget_Helper_Form_Element_Password('GT_PRIVATE_KEY', array("value"), @$form_data["GT_PRIVATE_KEY"], _t('geetestKEY'), _t(''));
+        $form->addInput($GT_PRIVATE_KEY);
+		
+        /** 动作 */
+        $do = new Typecho_Widget_Helper_Form_Element_Hidden('do');
+        $form->addInput($do);
+
+        /** 提交按钮 */
+        $submit = new Typecho_Widget_Helper_Form_Element_Submit();
+        $submit->input->setAttribute('class', 'btn primary');
+        $form->addItem($submit);
+
+        /** 设置值 */
+        $do->value('verifyCode');
+        $submit->value('保存');
+
+        return $form;
+    }
 }
