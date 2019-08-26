@@ -1,9 +1,9 @@
 <?php
 /**
- * Typecho多功能插件集成多项功能：百度(熊掌号)链接提交、手机登陆、邮箱登陆、QQ登陆、微博登陆、geetest验证码、忘记密码、网址缩短、论坛、多平台用户管理等。<div class="wecenterset"><br /><a href="javascript:;" title="插件因兴趣于闲暇时间所写，故会有代码不规范、不专业和bug的情况，但完美主义促使代码还说得过去，如有bug或使用问题进行反馈即可。">鼠标轻触查看备注</a>&nbsp;<a href="http://club.tongleer.com" target="_blank">论坛</a>&nbsp;<a href="https://www.tongleer.com/api/web/pay.png" target="_blank">打赏</a>&nbsp;<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=diamond0422@qq.com" target="_blank">反馈</a></div><style>.wecenterset a{background: #4DABFF;padding: 5px;color: #fff;}</style>
+ * Typecho多功能插件集成多项功能：百度(熊掌号)链接提交、手机登陆、邮箱登陆、QQ登陆、微博登陆、geetest验证码、忘记密码、网址缩短、论坛、多平台用户管理等。<div class="TleMultiSet"><br /><a href="javascript:;" title="插件因兴趣于闲暇时间所写，故会有代码不规范、不专业和bug的情况，但完美主义促使代码还说得过去，如有bug或使用问题进行反馈即可。">鼠标轻触查看备注</a>&nbsp;<a href="http://club.tongleer.com" target="_blank">论坛</a>&nbsp;<a href="https://www.tongleer.com/api/web/pay.png" target="_blank">打赏</a>&nbsp;<a href="http://mail.qq.com/cgi-bin/qm_share?t=qm_mailme&email=diamond0422@qq.com" target="_blank">反馈</a></div><style>.TleMultiSet a{background: #4DABFF;padding: 5px;color: #fff;}</style>
  * @package TleMultiFunction For Typecho
  * @author 二呆
- * @version 1.0.17<br /><span id="wecenterupdateinfo"></span><script>xmlHttp=new XMLHttpRequest();xmlHttp.open("GET","https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=17",true);xmlHttp.send(null);xmlHttp.onreadystatechange=function () {if (xmlHttp.readyState ==4 && xmlHttp.status ==200){document.getElementById("wecenterupdateinfo").innerHTML=xmlHttp.responseText;}}</script>
+ * @version 1.0.17<br /><span id="TleMultiUpdateInfo"></span><script>TleMultiXmlHttp=new XMLHttpRequest();TleMultiXmlHttp.open("GET","https://www.tongleer.com/api/interface/TleMultiFunction.php?action=update&version=17",true);TleMultiXmlHttp.send(null);TleMultiXmlHttp.onreadystatechange=function () {if (TleMultiXmlHttp.readyState ==4 && TleMultiXmlHttp.status ==200){document.getElementById("TleMultiUpdateInfo").innerHTML=TleMultiXmlHttp.responseText;}}</script>
  * @link http://www.tongleer.com/
  * @date 2019-08-25
  */
