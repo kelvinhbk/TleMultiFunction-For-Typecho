@@ -779,7 +779,7 @@ a;
 a;
 			}
 			$geetestSet=unserialize(@$get["enableGeetest"]);
-			if($geetestSet&&in_array("login",$geetestSet)){
+			if($geetestSet&&in_array("login",$geetestSet)&&!empty($get["GT_CAPTCHA_ID"])&&!empty($get["GT_PRIVATE_KEY"])){
 				$ja.=<<<a
 <script>
 	var pwdInput=document.getElementById('password');
