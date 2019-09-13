@@ -194,7 +194,7 @@ function sendMailSms($mailsmtp,$mailport,$mailuser,$mailpass,$secure,$code,$emai
 	$phpMailer->setFrom($mailuser, $title);
 	$phpMailer->addAddress($email, $email);
 
-	$phpMailer->Subject = '密码重置';
+	$phpMailer->Subject = '【'.$title.'】获取验证码';
 	$phpMailer->Body    = '<p>' . $email . ' 您好，欢迎使用【'.$title.'】验证码服务，您的验证码是：'.$code;
 
 	if(!$phpMailer->send()) {
