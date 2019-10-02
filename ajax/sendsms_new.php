@@ -172,7 +172,7 @@ function sendPhoneSms($accessKeyId,$accessKeySecret,$templatecode,$signname,$nam
  * 发送邮件
  */
 function sendMailSms($mailsmtp,$mailport,$mailuser,$mailpass,$secure,$code,$email,$title){
-	require_once '../PHPMailer/PHPMailerAutoload.php';
+	require_once '../include/PHPMailer/PHPMailerAutoload.php';
 
 	$phpMailer = new PHPMailer();
 	
