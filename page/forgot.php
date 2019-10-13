@@ -146,10 +146,17 @@ var handlerEmbed = function (captchaObj) {
 	captchaObj.appendTo("#embed-captcha");
 	$("#findpwdbyphone").click(function(){
 		var validate = captchaObj.getValidate();
+		<?php
+		$geetestSet=unserialize(@$get["enableGeetest"]);
+		if($geetestSet&&in_array("forgot",$geetestSet)){
+		?>
 		if (!validate) {
 			alert("请先完成验证");
 			return false;
 		}
+		<?php
+		}
+		?>
 		var phone=$("#phone").val();
 		var smscode=$("#smscode").val();
 		var indexUrl="<?=$options->index;?>";

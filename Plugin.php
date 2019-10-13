@@ -12,7 +12,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 	/** @var string 提交路由前缀 */
     public static $action = 'tleMultiFunction-code';
     /** @var string 控制菜单链接 */
-    public static $panel  = 'TleMultiFunction/page/console.php';
+    public static $panel  = 'TleMultiFunction/page/console1.php';
     // 激活插件
     public static function activate(){
 		TleMultiFunction_Plugin::Judge_database();
@@ -22,6 +22,10 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         Typecho_Plugin::factory('Widget_Contents_Page_Edit')->finishPublish = array(__CLASS__, 'baiduAutoSubmit');
 		Helper::addRoute('passport_forgot', '/passport/forgot', 'TleMultiFunction_Widget', 'doForgot');
         Helper::addRoute('passport_reset', '/passport/reset', 'TleMultiFunction_Widget', 'doReset');
+		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
+		if($versions[1]>="19.10.15"){
+			self::$panel='TleMultiFunction/page/console2.php';
+		}
 		Helper::addAction(self::$action, 'TleMultiFunction_Action');
         Helper::addPanel(1, self::$panel, '多功能设置', '多功能控制台', 'administrator');
 		if(!is_dir(dirname(__FILE__)."/config")){mkdir (dirname(__FILE__)."/config", 0777, true );}
@@ -39,7 +43,13 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 			)));
 		}
 		//恢复原注册页面
-		if(copy(dirname(__FILE__).'/page/register.php',dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/register.php')){
+		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
+		if($versions[1]<"19.10.15"){
+			$registerFileName="register1.php";
+		}else{
+			$registerFileName="register2.php";
+		}
+		if(copy(dirname(__FILE__).'/page/'.$registerFileName,dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/register.php')){
 		}
 		//删除页面模板
 		$db = Typecho_Db::get();
@@ -50,6 +60,10 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_bbs.php');
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_oauthlogin.php');
 		@unlink(dirname(__FILE__).'/../../themes/'.$rowTheme['value'].'/page_multi_phonelogin.php');
+		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
+		if($versions[1]>="19.10.15"){
+			self::$panel='TleMultiFunction/page/console2.php';
+		}
 		Helper::removeAction(self::$action);
         Helper::removePanel(1, self::$panel);
 		Helper::removeRoute('passport_reset');
@@ -70,7 +84,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
         $pass = new Typecho_Widget_Helper_Form_Element_Password('pass', null, '', _t('密码：'));
         $form->addInput($pass->addRule('required', _t('密码不能为空！')));
 		
-		$token = new Typecho_Widget_Helper_Form_Element_Text('token', null, '', _t('Token：'), _t("自行到<a href='https://www.tongleer.com/wp-login.php?action=register' target='_blank'>同乐儿</a>注册账号后获取"));
+		$token = new Typecho_Widget_Helper_Form_Element_Text('token', null, '', _t('Token：'), _t("自行到<a href='https://www.tongleer.com/reg' target='_blank'>同乐儿</a>注册账号后获取"));
         $form->addInput($token->addRule('required', _t('token不能为空！')));
 		
 		$db = Typecho_Db::get();
@@ -820,7 +834,7 @@ a;
 			}
 			$ja.=<<<a
 <script>
-	$(".more-link").append('&bull;<a href="$forgot">忘记密码</a>');
+	$(".more-link").append(' <a href="$forgot">忘记密码</a>');
 </script>
 a;
 		if(isset($get["enableQQlogin"])&&$get["enableQQlogin"]=="y"){
@@ -861,6 +875,12 @@ a;
 	var pInput = document.createElement("p");
 	pInput.id = "codeInput";
 	mailInput.parentNode.appendChild(pInput);
+	if(document.getElementById('maillabel')){
+		document.getElementById('maillabel').style="display:none";
+	}
+	if(document.getElementById('namelabel')){
+		document.getElementById('namelabel').style="display:none";
+	}
 	document.getElementById('codeInput').innerHTML=codeInputs;
 	var timestamp = (new Date()).valueOf();
 	mailInput.value=timestamp+"@yourdomain.com";mailInput.style.display="none";
