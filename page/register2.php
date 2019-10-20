@@ -43,17 +43,19 @@ include 'header.php';
     <br />
 
     <form action="<?php $options->registerAction(); ?>" method="post" name="register" role="form" class="am-form">
-      <label for="name"><?php _e('用户名'); ?>:</label>
-      <input type="text" name="name" id="name" value="<?php echo $rememberName; ?>" placeholder="<?php _e('用户名'); ?>" autofocus />
-      <br />
-      <label for="mail"><?php _e('Email'); ?>:</label>
+      <p>
+		<input type="text" name="name" id="name" value="<?php echo $rememberName; ?>" placeholder="<?php _e('用户名'); ?>" autofocus />
+      </p>
+	  <p>
       <input type="email" name="mail" id="mail" value="" placeholder="<?php _e('Email'); ?>">
-      <br />
+		</p>
+	  <p>
       <div class="am-cf">
         <input type="submit" name="" value="<?php _e('注册'); ?>" class="am-btn am-btn-primary am-btn-sm am-fl">
       </div>
+	  </p>
     </form>
-	<p>
+	<p class="more-link">
 		<a href="<?php $options->siteUrl(); ?>"><?php _e('返回首页'); ?></a>
 		<a href="<?php $options->adminUrl('login.php'); ?>"><?php _e('用户登录'); ?></a>
 	</p>

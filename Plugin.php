@@ -12,7 +12,7 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 	/** @var string 提交路由前缀 */
     public static $action = 'tleMultiFunction-code';
     /** @var string 控制菜单链接 */
-    public static $panel  = 'TleMultiFunction/page/console1.php';
+    public static $panel  = 'TleMultiFunction/page/console.php';
     // 激活插件
     public static function activate(){
 		TleMultiFunction_Plugin::Judge_database();
@@ -25,6 +25,9 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
 		if($versions[1]>="19.10.15"){
 			self::$panel='TleMultiFunction/page/console2.php';
+		}
+		if($versions[1]>="19.10.20"){
+			self::$panel='TleMultiFunction/page/console3.php';
 		}
 		Helper::addAction(self::$action, 'TleMultiFunction_Action');
         Helper::addPanel(1, self::$panel, '多功能设置', '多功能控制台', 'administrator');
@@ -45,9 +48,13 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		//恢复原注册页面
 		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
 		if($versions[1]<"19.10.15"){
-			$registerFileName="register1.php";
-		}else{
+			$registerFileName="register.php";
+		}
+		if($versions[1]>="19.10.15"){
 			$registerFileName="register2.php";
+		}
+		if($versions[1]>="19.10.20"){
+			$registerFileName="register3.php";
 		}
 		if(copy(dirname(__FILE__).'/page/'.$registerFileName,dirname(__FILE__).'/../../../'.substr(__TYPECHO_ADMIN_DIR__,1,count(__TYPECHO_ADMIN_DIR__)-2).'/register.php')){
 		}
@@ -63,6 +70,9 @@ class TleMultiFunction_Plugin implements Typecho_Plugin_Interface
 		$versions=explode("/",Typecho_Widget::widget('Widget_Options')->Version);
 		if($versions[1]>="19.10.15"){
 			self::$panel='TleMultiFunction/page/console2.php';
+		}
+		if($versions[1]>="19.10.20"){
+			self::$panel='TleMultiFunction/page/console3.php';
 		}
 		Helper::removeAction(self::$action);
         Helper::removePanel(1, self::$panel);
