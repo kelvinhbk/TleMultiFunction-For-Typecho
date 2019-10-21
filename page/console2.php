@@ -12,9 +12,7 @@ if($versions[1]>="19.10.15"){
 	TleMultiFunction_Plugin::$panel='TleMultiFunction/page/console2.php';
 }
 ?>
-  <!-- content start -->
-  <div class="admin-content row typecho-page-main">
-    <div class="admin-content-body">
+    <div class="admin-content-body row typecho-page-main">
       <div class="am-cf am-padding typecho-page-title">
 			<div class="am-fl am-cf">
 				<?=$title?>
@@ -254,12 +252,6 @@ if($versions[1]>="19.10.15"){
 	<footer class="admin-content-footer">
 	<?php include 'copyright.php';?>
 	</footer>
-  </div>
-  <!-- content end -->
-</div>
-
-<a href="#" class="am-icon-btn am-icon-th-list am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}"></a>
-
 <?php
 include 'common-js.php';
 include 'footer.php';

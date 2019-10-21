@@ -13,8 +13,6 @@ if($versions[1]>="19.10.20"){
 	TleMultiFunction_Plugin::$panel='TleMultiFunction/page/console3.php';
 }
 ?>
-		<!-- 内容区域 -->
-        <div class="tpl-content-wrapper typecho-page-main">
             <div class="container-fluid am-cf">
                 <div class="row">
                     <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
@@ -264,12 +262,8 @@ if($versions[1]>="19.10.20"){
                     </div>
                 </div>
             </div>
-			<?php
-			include 'copyright.php';
-			?>
-        </div>
-	</div>
 <?php
+include 'copyright.php';
 include 'common-js.php';
 include 'footer.php';
 ?>
